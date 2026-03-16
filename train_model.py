@@ -1,10 +1,6 @@
 # tqdm.auto
 import torch
-from torch import nn
 from torch import optim
-from kornia import losses
-# Mais informacoes em https://lightning.ai/docs/torchmetrics/stable/classification/jaccard_index.html#torchmetrics.classification.MulticlassJaccardIndex
-from torchmetrics.classification import MulticlassJaccardIndex # Jaccard Index eh a mesma coisa que IoU (Intersection over Union) e esse opjeto pode calcular tambem iIoU
 from tqdm.auto import tqdm
 from pathlib import Path
 
@@ -14,12 +10,13 @@ class TrainLinkNet:
   
     def __init__(self, model: torch.nn.Module, loss_fn: callable, optim_fn: callable, metrics: dict,
                  val_to_monitor: str="loss",
-                 scheduler_name: str="OneCycleLR",
+                 scheduler_name: str="ReduceLROnPlateau", # Opcoes: "OneCycleLR" ou "ReduceLROnPlateau"
                  max_lr: float=1e-3, # valido apenas para o OneCycleLR, e ignorado caso scheduler_fn seja diferente de "OneCycleLR"
                  epochs: int = 5,
                  device: torch.device='cpu') -> None:
     
         self.model = model.to(device)
+        self.val_to_monitor = val_to_monitor
         self.epochs = epochs
         self.device = device
         self.max_lr = max_lr
@@ -77,11 +74,13 @@ class TrainLinkNet:
         )
             
         elif self.scheduler_name == "ReduceLROnPlateau":
+            # Reduce LR on Plateau configurado para fine-tuning
+            mode = 'min' if self.val_to_monitor=='loss' else 'max' # Se a metrica monitorada for a loss, entao queremos minimizar ela, caso contrario queremos maximizar a metrica
             self.scheduler_fn = optim.lr_scheduler.ReduceLROnPlateau(
                 self.optim_fn,
-                mode='max',                  # Queremos maximizar a metrica monitorada (iIoU), entao o modo é 'max'
-                factor=0.1,                  # Reduz o LR em 10x quando a metrica monitorada nao melhorar
-                patience=2,                  # Espera 2 epochs sem melhoria para reduzir o LR
+                mode=mode,
+                factor=0.5,                  # Reduz o LR em 2x quando a metrica monitorada nao melhorar
+                patience=5,                  # Espera 5 epochs sem melhoria para reduzir o LR
                 verbose=True                 # Imprime mensagens quando o LR for reduzido
             )
 
@@ -165,10 +164,7 @@ class TrainLinkNet:
         for batch, (X, y) in enumerate(tqdm(dataloader)):
             X, y = X.to(self.device), y.to(self.device)
             y_pred = self.model(X) # O modelo retorna uma tupla com a saida principal e a saida auxiliar
-            if self.model.aux:
-                batch_loss = self.loss_fn(y_pred[0], y.long()) + 0.4 * self.loss_fn(y_pred[1], y.long()) # Calcula a loss total como a soma da loss principal e da loss auxiliar, com um peso de 0.4 para a loss auxiliar, conforme sugerido no artigo original do Fast-SCNN
-            else:
-                batch_loss = self.loss_fn(y_pred[0], y.long()) # Calculate loss for the current batch
+            batch_loss = self.loss_fn(y_pred, y.long()) # Calculate loss for the current batch
             train_loss += batch_loss.item() # Accumulate the scalar value for reporting
 
             self.optim_fn.zero_grad()
@@ -177,7 +173,7 @@ class TrainLinkNet:
             if self.scheduler_name == "OneCycleLR":
                 self.scheduler_fn.step() # usar com OneCycleLR
 
-            y_pred_class = torch.softmax(y_pred[0], dim=1).argmax(dim=1).squeeze(dim=1) # Converte as probabilidades em classes preditas e remove a dimensão de canal extra
+            y_pred_class = torch.softmax(y_pred, dim=1).argmax(dim=1).squeeze(dim=1) # Converte as probabilidades em classes preditas e remove a dimensão de canal extra
             for i, metric_fn in enumerate(self.metric_fns):
                 metric_values[i] += metric_fn(y_pred_class, y).cpu() # Calcula as metricas para o batch atual e acumula os valores em uma lista
         
@@ -206,9 +202,9 @@ class TrainLinkNet:
             for batch, (X, y) in enumerate(dataloader):
                 X, y = X.to(self.device), y.to(self.device)
                 y_pred = self.model(X)
-                val_loss += self.loss_fn(y_pred[0], y.long()).item() + 0.4 * self.loss_fn(y_pred[1], y.long()).item() # Accumulate the scalar value
+                val_loss += self.loss_fn(y_pred, y.long()).item() # Accumulate the scalar value
 
-                y_pred_class = torch.softmax(y_pred[0], dim=1).argmax(dim=1).squeeze(dim=1) # Converte as probabilidades em classes preditas e remove a dimensão de canal extra
+                y_pred_class = torch.softmax(y_pred, dim=1).argmax(dim=1).squeeze(dim=1) # Converte as probabilidades em classes preditas e remove a dimensão de canal extra
                 for i, metric_fn in enumerate(self.metric_fns):
                     metric_values[i] += metric_fn(y_pred_class, y).cpu() # Calcula as metricas para o batch atual e acumula os valores em uma lista
 

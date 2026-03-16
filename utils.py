@@ -133,7 +133,7 @@ def img_show(imgs: list[torch.Tensor], smnts1: list[torch.Tensor], smnts2: list[
 
 def predict_mask(model: torch.nn.Module, img: torch.Tensor, device: torch.device='cpu') -> torch.Tensor:
     smnt_logits = model(img.unsqueeze(dim=0).to(device))
-    smnt_mask = torch.softmax(smnt_logits[0], dim=1).argmax(dim=1).squeeze(dim=0).cpu()
+    smnt_mask = torch.softmax(smnt_logits, dim=1).argmax(dim=1).squeeze(dim=0).cpu()
     return smnt_mask
 
 

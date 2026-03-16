@@ -4,8 +4,13 @@
 # Copyright (c) 2017
 ###########################################################################
 
+'''
+From repo https://github.com/Tramac/Fast-SCNN-pytorch
+Copyed here for better comparisson with the quantized version of the model, and to avoid import errors due to the custom dataset and transforms
+The auxiliary output and the corresponding code in the training loop were removed since they are not being used in the training and can cause issues when translating the model to ONNX and then to FINN, which do not support multiple outputs.
+'''
+
 """Fast Segmentation Convolutional Neural Network"""
-import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -16,11 +21,13 @@ __all__ = ['FastSCNN', 'get_fast_scnn']
 class FastSCNN(nn.Module):
     def __init__(self, num_classes, aux=False, **kwargs):
         super(FastSCNN, self).__init__()
-        self.aux = aux
+        #self.aux = aux
         self.learning_to_downsample = LearningToDownsample(32, 48, 64)
         self.global_feature_extractor = GlobalFeatureExtractor(64, [64, 96, 128], 128, 6, [3, 3, 3])
         self.feature_fusion = FeatureFusionModule(64, 128, 128)
         self.classifier = Classifer(128, num_classes)
+        # Removing the tuple output since it can cause issues when translating the model to ONNX and then to FINN, and the auxiliary output is not being used in the training loop
+        '''
         if self.aux:
             self.auxlayer = nn.Sequential(
                 nn.Conv2d(64, 32, 3, padding=1, bias=False),
@@ -29,6 +36,7 @@ class FastSCNN(nn.Module):
                 nn.Dropout(0.1),
                 nn.Conv2d(32, num_classes, 1)
             )
+        '''
 
     def forward(self, x):
         size = x.size()[2:]
@@ -38,12 +46,16 @@ class FastSCNN(nn.Module):
         x = self.classifier(x)
         outputs = []
         x = F.interpolate(x, size, mode='bilinear', align_corners=True)
+        # Removing the auxiliary output since it can cause issues when translating the model to ONNX and then to FINN, and the auxiliary output is not being used in the training loop
+        '''
         outputs.append(x)
         if self.aux:
             auxout = self.auxlayer(higher_res_features)
             auxout = F.interpolate(auxout, size, mode='bilinear', align_corners=True)
             outputs.append(auxout)
         return tuple(outputs)
+        '''
+        return x
 
 
 class _ConvBNReLU(nn.Module):

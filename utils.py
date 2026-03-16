@@ -89,14 +89,9 @@ def img_show(imgs: list[torch.Tensor], smnts1: list[torch.Tensor], smnts2: list[
 
     '''
     Essa funcao imprime as imagens e segmentacoes do dataset,
-    Primeiramente desnormaliza as imagens que foram normalizadas para o ResNet18,
     caso smnts2 seja fornecido, entao as segmentacoes de smnts1 e smnts2 sao impressas lado a lado,
     caso contrario, apenas as segmentacoes de smnts1 sao impressas
     '''
-
-    # Valores do ImageNet para desnormalizar
-    mean = torch.tensor([0.485, 0.456, 0.406]).view(3, 1, 1)
-    std = torch.tensor([0.229, 0.224, 0.225]).view(3, 1, 1)
 
     # Definindo Variavel auxiliar paraa definir se os titulos das colunas devem er mostrados ou nao, dependendo se col_names foi fornecido e se a quantidade de nomes informados estiver correta
     if col_names is not None:
@@ -125,15 +120,8 @@ def img_show(imgs: list[torch.Tensor], smnts1: list[torch.Tensor], smnts2: list[
             ax.set_title(col)
 
     for i in range(n):
-        
-        # 1. Desnormaliza a imagem (imagem * std + mean)
-        img_to_show = imgs[i].cpu() * std + mean
-        
-        # 2. Garante que qualquer residuo matematico fique estritamente entre 0 e 1
-        img_to_show = torch.clamp(img_to_show, 0, 1)
 
-        # 3. Imprime a imagem e as segmentações
-        axes[i, 0].imshow(img_to_show.permute(1,2,0)) # permute para mudar a ordem dos canais e converter um tensor para imagem
+        axes[i, 0].imshow(imgs[i].permute(1,2,0)) # permute para mudar a ordem dos canais e converter um tensor para imagem
         axes[i, 0].axis('off')
         axes[i, 1].imshow(smnts1[i], cmap=cmap, vmin=0, vmax=NUM_CLASSES-1) # vmin e vmax para garantir que a segmentacao seja mostrada com as mesmas cores, independente da quantidade de classes presentes em cada segmentacao
         axes[i, 1].axis('off')
@@ -154,9 +142,6 @@ def test_model(model: torch.nn.Module, dataset, n:int = 5, device: torch.device=
     smnt_list = []
 
     model.eval()
-    # Aloca o modelo para o dispositivo correto, caso necessario
-    #if model.dummy_param.device != device:
-    #    model.to(device)
 
     with torch.no_grad():
         # Gera as listas de imagens e mascaras e chapa a funcao de imprimir
@@ -182,13 +167,9 @@ def dataset_show(dataset, n:int = 5, predict_masks: bool=False, model: torch.nn.
     if predict_masks and model is not None:
 
         model.eval()
-        # Aloca o modelo para o dispositivo correto, caso necessario
-        #if model.dummy_param.device != device:
-        #    model.to(device)
-        
+        pred_smnt_list = []
         with torch.no_grad():
             # Gerando as mascaras preditas pelo modelo para cada imagem do dataset
-            pred_smnt_list = []
             for img in img_list:
                 pred_smnt = predict_mask(model, img, device)
                 pred_smnt_list.append(pred_smnt)

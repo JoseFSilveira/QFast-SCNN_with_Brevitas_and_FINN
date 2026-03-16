@@ -126,7 +126,7 @@ class TrainLinkNet:
         MODEL_SAVE_PATH = self.MODEL_PATH / Path(name + ".pth")
 
         # Salvando o modelo
-        torch.save(obj=self.model.state_dict(), f=MODEL_SAVE_PATH) # Salva apenas os parametros do modelo (state_dict)
+        torch.save(obj=self.model._origin_mod.state_dict(), f=MODEL_SAVE_PATH) # Salva o State Dict do modelo antes do torch.compile, para evitar problemas de compatibilidade
 
         # Salvando os resultados do treino, caso necesssario
         if save_results:

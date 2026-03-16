@@ -35,7 +35,7 @@ class Transforms:
 
         # -- DATA TRANSFORMS -- #
         self.train_transform = v2.Compose([
-            v2.Resize(size=conv_size, interpolation=InterpolationMode.BILINEAR), # redimensiona imagem para 256x512
+            #v2.Resize(size=conv_size, interpolation=InterpolationMode.BILINEAR), # redimensiona imagem
             v2.PILToTensor(), # converte imagem PIL para tensor
             v2.ToDtype(torch.uint8) # apenas converte para inteiro sem normalizacao. Isso eh feito pois o algumas funcoes do DataAugmentation exigem que a imagem seja do tipo uint8
             # OBS: o restante da normalizacao (dividir por 255 e normalizar com media e desvio padrao) eh feito APOS a data augmentation
@@ -45,12 +45,11 @@ class Transforms:
             v2.Resize(size=conv_size, interpolation=InterpolationMode.BILINEAR), # redimensiona imagem para 256x512
             v2.PILToTensor(),
             v2.ToDtype(torch.float32, scale=True),
-            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) # Requisito para o backbone ResNet18, conforme mostrado no notebook principal
         ])
 
         # -- TARGET TRANFROMS -- #
         self.target_transform = v2.Compose([
-            v2.Resize(size=conv_size, interpolation=InterpolationMode.NEAREST_EXACT), # redimensiona imagem para 256x512. Nearest Neighbor para nao criar novos valores
+            #v2.Resize(size=conv_size, interpolation=InterpolationMode.NEAREST_EXACT), # redimensiona imagem para 256x512. Nearest Neighbor para nao criar novos valores
             v2.PILToTensor(), # converte segmentação PIL para tensor
             IdToTrainIdTransform(lable_conversion), # converte ids originais para ids de treino
             v2.Lambda(mask_squeeze), # remove canal extra desnecessário na segmentação
@@ -63,7 +62,7 @@ class Transforms:
             # Transformações Geométricas
             v2.RandomHorizontalFlip(p=0.5),
             v2.RandomRotation(degrees=2, interpolation=InterpolationMode.BILINEAR, expand=False, center=None, fill={tv_tensors.Image: (0,0,0), tv_tensors.Mask: 19}),
-            v2.RandomResizedCrop(size=conv_size, scale=(0.9, 1.1), ratio=(0.9, 1.1), interpolation=InterpolationMode.BILINEAR), # RandomResizedCrop para simular apenas zoom in e zoom out, alem de pequenas distorcoes na imagem
+            v2.RandomCrop(size=(768, 768)), # ou (1024, 1024) se a VRAM aguentar
             
             # Transformações Fotométricas (O v2 aplica AUTOMATICAMENTE só na Imagem)
             v2.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),

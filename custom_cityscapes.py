@@ -13,7 +13,7 @@ class CityscapesLables:
     def __init__(self):
 
         # Definindo o numero de classes treinaveis (19 classes + 1 classe de ignorar)
-        self.num_classes = 20
+        self.num_classes = 19
 
         # Criando listas dos nomes e das cores das classes treinaveis
         id_names = {}
@@ -22,25 +22,23 @@ class CityscapesLables:
         for c in datasets.Cityscapes.classes:
 
             # Adicionando valores ao dicionario de conversao de ids
-            lable_conversion[c.id] = c.train_id if c.train_id != 255 else 19 # Mapeia a classe 'ignore' (train_id 255) para 19, que é o índice da ultima classe treinavel
-
+            lable_conversion[c.id] = c.train_id if c.train_id != -1 else 255 # A classe 'ignore' tem train_id -1, entao atribui o valor 255 para ela
             # Adicionando valores as listas de nomes e cores
             if c.train_id != -1 and c.train_id != 255:
                 id_names[c.train_id] = c.name
                 color_list.append(c.color)
 
         # Variavel para dicionario de nomes
-        id_names.update({19: 'ignore'}) # Adiciona a classe 'ignore' com train_id -1
+        id_names.update({255: 'ignore'}) # Adiciona a classe 'ignore' com train_id 255
         self.id_names = id_names
 
         # Variavel para lista de cores
         train_colors_list = color_list
-        train_colors_list.append((0,0,0)) # Adiciona a cor preta para a classe 'ignore'
+        train_colors_list.append((0,0,0)) # Adiciona a cor preta para a classe 'ignore'. O cmap funcionara pois 255 constara como overflow e sera mapeado para a ultima cor da lista, que eh a preta
         self.train_colors_list = train_colors_list
         self.train_color_map = ['#%02x%02x%02x' % color for color in self.train_colors_list] # Criando o color map para imprimir imagens segmentadas
 
         # Criando o mapeamento para labels de treino
-        lable_conversion.pop(-1) # Remove lablel 'ignore' que tem train_id -1
         self.lable_conversion = lable_conversion
 
 
@@ -58,15 +56,16 @@ class CityscapesLables:
 
         # Verificar se o dataset tem mascaras convertidas para 20 classes, caso contrario o histograma sera incorreto
         _, mask = next(iter(dataloader))
-        if mask.max() >= self.num_classes:
-            raise ValueError(f"Dataset com mascaras nao convertidas para {self.num_classes} classes. O histograma sera incorreto. Use o IdToTrainIdTransform para converter as mascaras antes de criar o dataset.")
+        if mask.max() != 255 or mask.min() < 0:
+            raise ValueError(f"Dataset com mascaras nao convertidas para {self.num_classes+1} classes. O histograma sera incorreto. Use o IdToTrainIdTransform para converter as mascaras antes de criar o dataset.")
 
         # Criar histograma de frequencia das classes no dataset
-        class_count = torch.zeros(self.num_classes, dtype=torch.long, device=device) # Inicializa o contador de pixels para cada classe como um tensor de zeros
+        class_count = torch.zeros(self.num_classes+1, dtype=torch.long, device=device) # Inicializa o contador de pixels para cada classe como um tensor de zeros
         for _, mask in tqdm(dataloader, desc="Calculando histograma"):
             mask = mask.to(device) # Aloca as mascaras do batch no dispositivo
-            for c in range(self.num_classes):
-                class_count[c] += (mask == c).sum() # conta o numero de pixels da classe c na mascara e adiciona ao contador da classe c
+            for c in range(self.num_classes+1):
+                # Conta o numero de pixels da classe c no batch e adiciona ao contador total. Para a classe 'ignore' (train_id 255), conta os pixels com valor 255
+                class_count[c] += (mask == c).sum() if c != 19 else (mask == 255).sum()
 
         # Cria o grafico se print_histogram for True ou save_path for fornecido
         if print_histogram or save_path is not None:
@@ -138,10 +137,6 @@ class AugmentedCityscapes(datasets.Cityscapes):
     def __init__(self, *args, data_augmentation=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.data_augmentation = data_augmentation
-        self.normalize = v2.Compose([
-                v2.ToDtype(torch.float32, scale=True), # normaliza para [0,1]
-                v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) # Requisito para o backbone ResNet18, conforme mostrado no notebook principal
-            ])
 
     def __getitem__(self, index: int):
         image, target = super().__getitem__(index)
@@ -154,4 +149,4 @@ class AugmentedCityscapes(datasets.Cityscapes):
             # e que ajustes de cor (se houver) sejam aplicados APENAS na imagem.
             image, target = self.data_augmentation(tv_tensors.Image(image), tv_tensors.Mask(target))
             
-        return self.normalize(image), target
+        return v2.ToDtype(torch.float32, scale=True)(image), target

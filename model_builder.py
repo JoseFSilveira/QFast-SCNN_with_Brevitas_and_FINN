@@ -5,13 +5,17 @@
 ###########################################################################
 
 """Fast Segmentation Convolutional Neural Network"""
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+__all__ = ['FastSCNN', 'get_fast_scnn']
+
+
 class FastSCNN(nn.Module):
     def __init__(self, num_classes, aux=False, **kwargs):
-        super().__init__()
+        super(FastSCNN, self).__init__()
         self.aux = aux
         self.learning_to_downsample = LearningToDownsample(32, 48, 64)
         self.global_feature_extractor = GlobalFeatureExtractor(64, [64, 96, 128], 128, 6, [3, 3, 3])
@@ -46,7 +50,7 @@ class _ConvBNReLU(nn.Module):
     """Conv-BN-ReLU"""
 
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=0, **kwargs):
-        super().__init__()
+        super(_ConvBNReLU, self).__init__()
         self.conv = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, bias=False),
             nn.BatchNorm2d(out_channels),
@@ -61,7 +65,7 @@ class _DSConv(nn.Module):
     """Depthwise Separable Convolutions"""
 
     def __init__(self, dw_channels, out_channels, stride=1, **kwargs):
-        super().__init__()
+        super(_DSConv, self).__init__()
         self.conv = nn.Sequential(
             nn.Conv2d(dw_channels, dw_channels, 3, stride, 1, groups=dw_channels, bias=False),
             nn.BatchNorm2d(dw_channels),
@@ -77,7 +81,7 @@ class _DSConv(nn.Module):
 
 class _DWConv(nn.Module):
     def __init__(self, dw_channels, out_channels, stride=1, **kwargs):
-        super().__init__()
+        super(_DWConv, self).__init__()
         self.conv = nn.Sequential(
             nn.Conv2d(dw_channels, out_channels, 3, stride, 1, groups=dw_channels, bias=False),
             nn.BatchNorm2d(out_channels),
@@ -92,7 +96,7 @@ class LinearBottleneck(nn.Module):
     """LinearBottleneck used in MobileNetV2"""
 
     def __init__(self, in_channels, out_channels, t=6, stride=2, **kwargs):
-        super().__init__()
+        super(LinearBottleneck, self).__init__()
         self.use_shortcut = stride == 1 and in_channels == out_channels
         self.block = nn.Sequential(
             # pw
@@ -115,7 +119,7 @@ class PyramidPooling(nn.Module):
     """Pyramid pooling module"""
 
     def __init__(self, in_channels, out_channels, **kwargs):
-        super().__init__()
+        super(PyramidPooling, self).__init__()
         inter_channels = int(in_channels / 4)
         self.conv1 = _ConvBNReLU(in_channels, inter_channels, 1, **kwargs)
         self.conv2 = _ConvBNReLU(in_channels, inter_channels, 1, **kwargs)
@@ -145,7 +149,7 @@ class LearningToDownsample(nn.Module):
     """Learning to downsample module"""
 
     def __init__(self, dw_channels1=32, dw_channels2=48, out_channels=64, **kwargs):
-        super().__init__()
+        super(LearningToDownsample, self).__init__()
         self.conv = _ConvBNReLU(3, dw_channels1, 3, 2)
         self.dsconv1 = _DSConv(dw_channels1, dw_channels2, 2)
         self.dsconv2 = _DSConv(dw_channels2, out_channels, 2)
@@ -162,7 +166,7 @@ class GlobalFeatureExtractor(nn.Module):
 
     def __init__(self, in_channels=64, block_channels=(64, 96, 128),
                  out_channels=128, t=6, num_blocks=(3, 3, 3), **kwargs):
-        super().__init__()
+        super(GlobalFeatureExtractor, self).__init__()
         self.bottleneck1 = self._make_layer(LinearBottleneck, in_channels, block_channels[0], num_blocks[0], t, 2)
         self.bottleneck2 = self._make_layer(LinearBottleneck, block_channels[0], block_channels[1], num_blocks[1], t, 2)
         self.bottleneck3 = self._make_layer(LinearBottleneck, block_channels[1], block_channels[2], num_blocks[2], t, 1)
@@ -187,7 +191,7 @@ class FeatureFusionModule(nn.Module):
     """Feature fusion module"""
 
     def __init__(self, highter_in_channels, lower_in_channels, out_channels, scale_factor=4, **kwargs):
-        super().__init__()
+        super(FeatureFusionModule, self).__init__()
         self.scale_factor = scale_factor
         self.dwconv = _DWConv(lower_in_channels, out_channels, 1)
         self.conv_lower_res = nn.Sequential(
@@ -214,7 +218,7 @@ class Classifer(nn.Module):
     """Classifer"""
 
     def __init__(self, dw_channels, num_classes, stride=1, **kwargs):
-        super().__init__()
+        super(Classifer, self).__init__()
         self.dsconv1 = _DSConv(dw_channels, dw_channels, stride)
         self.dsconv2 = _DSConv(dw_channels, dw_channels, stride)
         self.conv = nn.Sequential(

@@ -138,9 +138,10 @@ class CityscapesLables:
 
 # Criar Classe para dateset modificado
 class AugmentedCityscapes(datasets.Cityscapes):
-    def __init__(self, *args, data_augmentation=None, **kwargs):
+    def __init__(self, *args, data_augmentation: v2.Compose=None, post_data_augmentation: v2.Compose=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.data_augmentation = data_augmentation
+        self.post_data_augmentation = post_data_augmentation
 
     def __getitem__(self, index: int):
         image, target = super().__getitem__(index)
@@ -153,4 +154,7 @@ class AugmentedCityscapes(datasets.Cityscapes):
             # e que ajustes de cor (se houver) sejam aplicados APENAS na imagem.
             image, target = self.data_augmentation(tv_tensors.Image(image), tv_tensors.Mask(target))
             
-        return v2.ToDtype(torch.float32, scale=True)(image), target
+        if self.post_data_augmentation is not None:
+            image = self.post_data_augmentation(image)
+
+        return image, target

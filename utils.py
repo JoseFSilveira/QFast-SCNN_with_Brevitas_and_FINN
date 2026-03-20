@@ -117,9 +117,16 @@ def img_show(imgs: list[torch.Tensor], smnts1: list[torch.Tensor], smnts2: list[
         for ax, col in zip(axes[0], col_names):
             ax.set_title(col)
 
-    for i in range(n):
+    # Parametros paara desnormalizar imagens
+    mean = torch.tensor([0.485, 0.456, 0.406]).view(3,1,1) # Reshape para (3,1,1) para que a operacao de desnormalizacao seja aplicada corretamente em cada canal da imagem
+    std = torch.tensor([0.229, 0.224, 0.225]).view(3,1,1) # Reshape para (3,1,1)
 
-        axes[i, 0].imshow(imgs[i].permute(1,2,0)) # permute para mudar a ordem dos canais e converter um tensor para imagem
+    for i in range(n):
+        
+        img_to_show = imgs[i] * std + mean # Desnormaliza a imagem para que as cores sejam mostradas corretamente
+        #img_to_show = torch.clamp(img_to_show, 0, 1) # Garante que qualquer residuo matematico fique estritamente entre 0 e 1
+
+        axes[i, 0].imshow(img_to_show.permute(1,2,0)) # permute para mudar a ordem dos canais e converter um tensor para imagem
         axes[i, 0].axis('off')
         axes[i, 1].imshow(smnts1[i], cmap=cmap, vmin=0, vmax=19) # vmin e vmax para garantir que a segmentacao seja mostrada com as mesmas cores, independente da quantidade de classes presentes em cada segmentacao
         axes[i, 1].axis('off')

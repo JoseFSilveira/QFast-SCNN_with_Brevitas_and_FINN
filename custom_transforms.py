@@ -2,7 +2,7 @@ import torch
 from torchvision.transforms import v2
 from torchvision.transforms import InterpolationMode
 from torchvision import tv_tensors  # <--- Importação necessária pára Augmentations
-from config import IGNORE_INDEX
+from config import IM_HEIGHT, IM_WIDTH, IGNORE_INDEX
 
 # -- Funcoes personalizadas para transformacoes -- #
 
@@ -43,9 +43,10 @@ class Transforms:
         ])
 
         self.val_transform = v2.Compose([
-            v2.Resize(size=conv_size, interpolation=InterpolationMode.BILINEAR), # redimensiona imagem para 256x512
+            #v2.Resize(size=conv_size, interpolation=InterpolationMode.BILINEAR), # redimensiona imagem para 256x512
             v2.PILToTensor(),
             v2.ToDtype(torch.float32, scale=True),
+            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) # Normaliza com media e desvio padrao do ImageNet
         ])
 
         # -- TARGET TRANFROMS -- #
@@ -62,12 +63,20 @@ class Transforms:
 
             # Transformações Geométricas
             v2.RandomHorizontalFlip(p=0.5),
+            v2.ScaleJitter(target_size=(IM_HEIGHT, IM_WIDTH), scale_range=(0.5, 2.0), antialias=True), # Redimensiona aleatoriamente entre 50% e 200% do tamanho base
             v2.RandomRotation(degrees=2, interpolation=InterpolationMode.BILINEAR, expand=False, center=None, fill={tv_tensors.Image: (0,0,0), tv_tensors.Mask: IGNORE_INDEX}),
-            v2.RandomCrop(size=(768, 768)), # ou (1024, 1024) se a VRAM aguentar
+            v2.RandomCrop(size=(768, 768), pad_if_needed=True,
+                          fill={tv_tensors.Image: (0,0,0), tv_tensors.Mask: IGNORE_INDEX}), # Corta aleatoriamente uma região de 768x768, preenchendo com preto ou IGNORE_INDEX se necessário
             
             # Transformações Fotométricas (O v2 aplica AUTOMATICAMENTE só na Imagem)
             v2.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
             
             # Opcional: Borrão para simular foco ruim
             v2.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2.0))
+        ])
+
+        # -- POST DATA AUGMENTATION TRANSFORMS -- #
+        self.post_data_augmentation = v2.Compose([
+            v2.ToDtype(torch.float32, scale=True), # Converte para float e normaliza para [0,1]
+            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) # Normaliza com media e desvio padrao do ImageNet
         ])

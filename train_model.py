@@ -35,8 +35,7 @@ class TrainModel:
         # Definir metricas
         self.metric_names = list(metrics.keys()) # Armazena os nomes das metricas para facilitar a impressao dos resultados do treino
         self.metric_fns = [metric for metric in metrics.values()] # Armazena as funcoes de metricas em uma lista, para facilitar o loop de treino, e move as metricas para o dispositivo correto
-        self.metric_types = self.test_metric_output() # Testa se as metricas retornam valores unicos ou tensores com mais de um valor, para ajudar na inicializacao do loop de treino
-
+        
         # Definir a metrica a ser monitorada para salvar o melhor modelo
         if val_to_monitor in metrics.keys() or val_to_monitor == 'loss':
             self.metric_to_monitor = val_to_monitor
@@ -84,30 +83,7 @@ class TrainModel:
                 mode=mode,
                 factor=0.5,                  # Reduz o LR em 2x quando a metrica monitorada nao melhorar
                 patience=5,                  # Espera 5 epochs sem melhoria para reduzir o LR
-                verbose=True                 # Imprime mensagens quando o LR for reduzido
             )
-
-
-    def test_metric_output(self) -> list[type]:
-        # Testa se as metricas retornam valores unicos ou tensores com mais de um valor, para ajudar na inicializacao do loop de treino
-        y_true = torch.randint(low=0, high=self.num_classes, size=(10, 10)).to(self.device)
-        y_pred = torch.randint(low=0, high=self.num_classes, size=(10, 10)).to(self.device)
-
-        metric_out_types = []
-        for metric_fn in self.metric_fns:
-            metric_value = metric_fn(y_pred, y_true)
-            
-            # Verifica se a saida das metricas eh um tensor, caso contrario o loop de treino sera inicializado incorretamente
-            if not isinstance(metric_value, torch.Tensor):
-                raise ValueError(f"Valor da metrica {metric_fn} nao eh um tensor. Verifique a implementacao da metrica.")
-            
-            # Verifica se a saida das metricas eh um tensor escalar (valor unico) ou um tensor com mais de um valor, para ajudar na inicializacao do loop de treino
-            if metric_value.shape == torch.Size([]):
-                metric_out_types.append(int)
-            else:
-                metric_out_types.append(list)
-
-        return metric_out_types
 
 
     def save_results(self, path: str) -> None:
@@ -130,7 +106,8 @@ class TrainModel:
         file_folder.mkdir(parents=True, exist_ok=True)
 
         # Salvando o modelo
-        torch.save(obj=self.model._origin_mod.state_dict(), f=path) # Salva o State Dict do modelo antes do torch.compile, para evitar problemas de compatibilidade
+        model_to_save = getattr(self.model, "_orig_mod", self.model) # Verifica se o modelo tem o atributo _orig_mod, que é criado pelo torch.compile, e salva o modelo original caso ele exista, para evitar problemas de compatibilidade ao carregar o modelo salvo
+        torch.save(obj=model_to_save.state_dict(), f=path) # Salva o State Dict do modelo antes do torch.compile, para evitar problemas de compatibilidade
 
         # Salvando os resultados do treino, caso necesssario
         if results_path is not None:
@@ -159,12 +136,6 @@ class TrainModel:
         self.model.train()
         train_loss = 0
         metric_values = []
-        
-        for metric_type in self.metric_types:
-            if metric_type == int:
-                metric_values.append(0)
-            else:
-                metric_values.append(torch.zeros(self.num_classes))
 
         for batch, (X, y) in enumerate(tqdm(dataloader)):
             X, y = X.to(self.device), y.to(self.device)
@@ -179,15 +150,14 @@ class TrainModel:
                 self.scheduler_fn.step() # usar com OneCycleLR
 
             y_pred_class = torch.softmax(y_pred, dim=1).argmax(dim=1).squeeze(dim=1) # Converte as probabilidades em classes preditas e remove a dimensão de canal extra
-            for i, metric_fn in enumerate(self.metric_fns):
-                metric_values[i] += metric_fn(y_pred_class, y).cpu() # Calcula as metricas para o batch atual e acumula os valores em uma lista
+            for metric_fn in self.metric_fns:
+                    metric_fn.update(y_pred_class, y) # Atualiza o estado interno de cada metrica com as classes preditas e as classes verdadeiras do batch atual
         
         train_loss /= len(dataloader)
-        for i, metric_value in enumerate(metric_values):
-            if self.metric_types[i] == int:
-                metric_values[i] = metric_value / len(dataloader) # Calcula a media das metricas para o epoch atual, caso a metrica retorne um valor unico
-            else:
-                metric_values[i] = torch.clone(metric_value) / len(dataloader) # Calcula a media das metricas para o epoch atual, caso a metrica retorne um tensor com mais de um valor
+
+        # Calcula o valor final de cada metrica para o epoch atual, usando os valores acumulados durante a iteracao sobre os batches do dataloader
+        for metric_fn in self.metric_fns:
+            metric_values.append(metric_fn.compute().cpu())
 
         return train_loss, metric_values
 
@@ -197,12 +167,6 @@ class TrainModel:
         val_loss = 0
         metric_values = []
 
-        for metric_type in self.metric_types:
-            if metric_type == int:
-                metric_values.append(0)
-            else:
-                metric_values.append(torch.zeros(self.num_classes))
-
         with torch.inference_mode():
             for batch, (X, y) in enumerate(dataloader):
                 X, y = X.to(self.device), y.to(self.device)
@@ -210,15 +174,14 @@ class TrainModel:
                 val_loss += self.loss_fn(y_pred, y.long()).item() # Accumulate the scalar value
 
                 y_pred_class = torch.softmax(y_pred, dim=1).argmax(dim=1).squeeze(dim=1) # Converte as probabilidades em classes preditas e remove a dimensão de canal extra
-                for i, metric_fn in enumerate(self.metric_fns):
-                    metric_values[i] += metric_fn(y_pred_class, y).cpu() # Calcula as metricas para o batch atual e acumula os valores em uma lista
+                for metric_fn in self.metric_fns:
+                    metric_fn.update(y_pred_class, y) # Atualiza o estado interno de cada metrica com as classes preditas e as classes verdadeiras do batch atual
 
         val_loss /= len(dataloader)
-        for i, metric_value in enumerate(metric_values):
-            if self.metric_types[i] == int:
-                metric_values[i] = metric_value / len(dataloader) # Calcula a media das metricas para o epoch atual, caso a metrica retorne um valor unico
-            else:
-                metric_values[i] = torch.clone(metric_value) / len(dataloader) # Calcula a media das metricas para o epoch atual, caso a metrica retorne um tensor com mais de um valor
+
+        # Calcula o valor final de cada metrica para o epoch atual, usando os valores acumulados durante a iteracao sobre os batches do dataloader
+        for metric_fn in self.metric_fns:
+            metric_values.append(metric_fn.compute().cpu())
 
         return val_loss, metric_values
     
@@ -245,15 +208,15 @@ class TrainModel:
 
             # Atualiza o learning rate do otimizador, caso a iIoU de validacao nao tenha melhorado em relacao ao melhor valor registrado, caso o scheduler seja o ReduceLROnPlateau
             if self.scheduler_name == "ReduceLROnPlateau":
-                self.scheduler.step(val_metrics[self.metric_monitor_index]) # usar com ReduceLROnPlateau
+                self.scheduler_fn.step(val_metrics[self.metric_monitor_index]) # usar com ReduceLROnPlateau
 
             # Imprimindo o que esta acontecendo
             train_metric_string = ""
             val_metric_string = ""
             for i, metric_name in enumerate(self.metric_names):
-                if self.metric_types[i] == int: # apenas para metricas que retornam um valor unico, como o iIoU
-                    train_metric_string += f"train_{metric_name}: {train_metrics[i]:.4f} | " # Formatted to 4 decimal places for readability
-                    val_metric_string += f"val_{metric_name}: {val_metrics[i]:.4f} | " # Formatted to 4 decimal places for readability
+                if metric_name != "IoU": # apenas para metricas que retornam um valor unico, como o iIoU
+                    train_metric_string += f"train_{metric_name}: {train_metrics[i].item():.4f} | " # Formatted to 4 decimal places for readability
+                    val_metric_string += f"val_{metric_name}: {val_metrics[i].item():.4f} | " # Formatted to 4 decimal places for readability
 
             print(f"train_loss: {train_loss:.4f} | " # Formatted to 4 decimal places for readability
                     f"{train_metric_string}"

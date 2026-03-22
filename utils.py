@@ -20,27 +20,6 @@ def plot_leaning_rate_evolution(learning_rates: list[float]) -> None:
     plt.show()
 
 
-def get_best_results(results: dict, IoU_lables: list=None, train_metrics: bool=False) -> dict:
-    best_results = {}
-    for metric_name, results in results.items():
-        if train_metrics or metric_name.startswith('val_'):
-            results_raw = results[-1] # Pega o valor da metrica na ultima epoca de treinamento, que corresponde ao melhor modelo salvo.
-
-            if metric_name == 'val_IoU':
-                results_items = list(results_raw) # Pega os valores do IoU de cada classe na ultima epoca de treinamento, e converte para numero real com
-                if IoU_lables is not None:
-                    results_final = {IoU_lables[i]: value.item() for i, value in enumerate(results_items)} # Mapeia os valores do IoU de cada classe para o nome da classe correspondente, usando o dicionário de mapeamento de ids para nomes de classes
-                else:
-                    results_final = {f'class_{i}': value.item() for i, value in enumerate(results_items)} # Se o dicionario de mapeamento de ids para nomes de classes não for fornecido
-
-
-            else:
-                results_final = float(results_raw) # Converte o valor da metrica para numero real com .item() caso nao seja IoU, que possui apenas um numero a representando
-                
-            best_results[metric_name] = results_final
-    return best_results
-
-
 def print_results(model_results: dict, metrics: dict) -> None:
 
     if model_results is not None:
@@ -188,26 +167,9 @@ def dataset_show(dataset, n:int = 5, predict_masks: bool=False, model: torch.nn.
 
     img_show(imgs=img_list, smnts1=smnt_list, smnts2=pred_smnt_list,
              n=n,col_names=col_names, cmap=cmap)
-
-
-def load_results(path: str) -> dict | None:
-
-    path = Path(path)
-    file_name = path.stem # Extrai o nome do arquivo a partir do caminho dado
-    if path.is_file():
-        print(f"Carregando resultados do modelo {file_name}")
-        with open(path, "rb") as f:
-            results = torch.load(f, map_location='cpu')
-
-        return results
     
-    else:
-        print(f"Resultados do modelo {file_name} nao encontrados.")
-        return None
+def load_state_dict(model: torch.nn.Module, path: str) -> torch.nn.Module | tuple[torch.nn.Module, dict]:
 
-
-def load_state_dict(model: torch.nn.Module, path: str, results_path: str=None) -> torch.nn.Module | tuple[torch.nn.Module, dict]:
-    
     # Carregando apenas os parametros (state_dict()), pois isso flexibiliza o modelo e evita erros de incompatibilidade com parametros e caminhos do modelo original
     # OBS: torch.load() carrega o modelo inteiro, nao apenas os parametros
     path = Path(path)
@@ -216,12 +178,6 @@ def load_state_dict(model: torch.nn.Module, path: str, results_path: str=None) -
         print(f"Carregando modelo {model_name}")
         model.load_state_dict(torch.load(f=path))
     else:
-        print(f"Modelo {model_name} nao encontrado.")
-
-    # Se load_results nao for nulo, entao o modelo e carregado e testado, e os resultados sao impressos, caso contrario, apenas o modelo e carregado e retornado
-    if results_path is not None:
-        model_results = load_results(results_path)
-        return model, model_results
+        print(f"Pesoss do modelo {model_name} nao encontrados.")
     
-    else:
-        return model
+    return model

@@ -5,11 +5,12 @@ import random
 from pathlib import Path
 # Mais informacoes em https://lightning.ai/docs/torchmetrics/stable/classification/jaccard_index.html#torchmetrics.classification.MulticlassJaccardIndex
 from torchmetrics.classification import MulticlassJaccardIndex
+import warnings
 
 import custom_cityscapes as ccs
 
 def plot_leaning_rate_evolution(learning_rates: list[float]) -> None:
-    plt.figure(figsize=(5, 10))
+    plt.figure(figsize=(5, 5))
     plt.plot(learning_rates)
     plt.xlabel("Epochs")
     plt.ylabel("Learning Rate")
@@ -168,7 +169,7 @@ def dataset_show(dataset, n:int = 5, predict_masks: bool=False, model: torch.nn.
     img_show(imgs=img_list, smnts1=smnt_list, smnts2=pred_smnt_list,
              n=n,col_names=col_names, cmap=cmap)
     
-def load_state_dict(model: torch.nn.Module, path: str) -> torch.nn.Module | tuple[torch.nn.Module, dict]:
+def load_state_dict(model: torch.nn.Module, path: str, strict: bool = True, ignore_key_name: list=None) -> torch.nn.Module | tuple[torch.nn.Module, dict]:
 
     # Carregando apenas os parametros (state_dict()), pois isso flexibiliza o modelo e evita erros de incompatibilidade com parametros e caminhos do modelo original
     # OBS: torch.load() carrega o modelo inteiro, nao apenas os parametros
@@ -176,8 +177,27 @@ def load_state_dict(model: torch.nn.Module, path: str) -> torch.nn.Module | tupl
     model_name = path.stem # Extrai o nome do modelo a partir do caminho dado
     if path.is_file():
         print(f"Carregando modelo {model_name}")
-        model.load_state_dict(torch.load(f=path))
+        missing_keys, unexpected_keys = model.load_state_dict(torch.load(f=path), strict=strict)
+
+        # Verificando se existem chaves faltando ou chaves inesperadas
+        if strict == False:
+            if len(unexpected_keys) > 0:
+                raise RuntimeError("Chaves inesperadas encontradas ao carregar o modelo:\n"
+                                  f"{unexpected_keys}\n")
+            
+            if len(missing_keys) > 0 and ignore_key_name is not None:
+
+                error_missing_keys = []
+                
+                for key in missing_keys:
+                    if not any(ignore_key in key for ignore_key in ignore_key_name):
+                        error_missing_keys.append(key)
+                
+                if len(error_missing_keys) > 0:
+                    warnings.warn("Chaves faltando encontradas ao carregar o modelo:\n"
+                                  f"{error_missing_keys}\n")
+
     else:
         print(f"Pesoss do modelo {model_name} nao encontrados.")
-    
+
     return model

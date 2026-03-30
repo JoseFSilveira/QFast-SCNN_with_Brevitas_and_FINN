@@ -29,6 +29,7 @@ BATCH_SIZE = 12
 NUM_WORKERS = os.cpu_count() // 2
 EPOCHS = 100
 LEARNING_RATE = 5e-5
+BIT_WIDTH = 8
 
 NUM_CLASSES = 19 # Numero de classes do dataset, excluindo a classe de ignorar (void)
 IGNORE_INDEX = 255 # Valor do pixel para a classe de ignorar (void)

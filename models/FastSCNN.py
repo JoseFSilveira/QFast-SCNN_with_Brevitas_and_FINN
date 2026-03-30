@@ -45,7 +45,7 @@ class FastSCNN(nn.Module):
         x = self.global_feature_extractor(higher_res_features)
         x = self.feature_fusion(higher_res_features, x)
         x = self.classifier(x)
-        outputs = []
+        #outputs = []
         x = F.interpolate(x, size, mode='bilinear', align_corners=True)
         # Removing the auxiliary output since it can cause issues when translating the model to ONNX and then to FINN, and the auxiliary output is not being used in the training loop
         '''

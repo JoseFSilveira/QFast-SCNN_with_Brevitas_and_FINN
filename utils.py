@@ -6,6 +6,9 @@ from pathlib import Path
 # Mais informacoes em https://lightning.ai/docs/torchmetrics/stable/classification/jaccard_index.html#torchmetrics.classification.MulticlassJaccardIndex
 from torchmetrics.classification import MulticlassJaccardIndex
 import warnings
+import netron
+import time
+from IPython.display import IFrame
 
 import custom_cityscapes as ccs
 
@@ -201,3 +204,9 @@ def load_state_dict(model: torch.nn.Module, path: str, strict: bool = True, igno
         print(f"Pesoss do modelo {model_name} nao encontrados.")
 
     return model
+
+
+def show_netron_model(model_path: str, port: int = 8081) -> None:
+    time.sleep(3.)
+    netron.start(model_path, address=("localhost", port), browse=False)
+    return IFrame(src=f"http://localhost:{port}", width="100%", height="400px")

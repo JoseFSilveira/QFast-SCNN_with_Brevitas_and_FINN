@@ -10,7 +10,7 @@ warnings.filterwarnings('once') # Exibe cada aviso apenas uma vez para evitar po
 os.environ['ROCR_VISIBLE_DEVICES'] = '0' # Define quais GPUs AMD estão visíveis para o PyTorch. Use '0' para a primeira GPU, '1' para a segunda, etc.
 os.environ['TORCH_USE_HIP_DSA'] = '1' # Habilita o uso de Direct Storage Access (DSA) para melhorar a performance em GPUs AMD.
 # Usar apenass para debugging, pois causa problemas de performance e estabilidade em alguns casos.
-#os.environ['AMD_SERIALIZE_KERNEL'] = '3' # Habilita a serializacao de kernels para depuração e analise de desempenho.
+os.environ['AMD_SERIALIZE_KERNEL'] = '3' # Habilita a serializacao de kernels para depuração e analise de desempenho.
 
 
 # -- DEFINICAO DE CONSTANTES --

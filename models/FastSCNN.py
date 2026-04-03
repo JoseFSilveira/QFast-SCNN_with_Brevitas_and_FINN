@@ -5,10 +5,9 @@
 ###########################################################################
 
 '''
-From repo https://github.com/Tramac/Fast-SCNN-pytorch
-Copyed here for better comparisson with the quantized version of the model, and to avoid import errors due to the custom dataset and transforms
-The auxiliary output and the corresponding code in the training loop were removed since they are not being used in the training and can cause issues when translating the model to ONNX and then to FINN, which do not support multiple outputs.
-Also, the interpolation upsamples in pyramid pooling and feature fusion modules were changed to use 'nearest-exact' mode instead of 'bilinear' to avoid issues when translating the model to ONNX and then to FINN, which do not support 'bilinear' mode with align_corners=True.
+From repo https://github.com/Tramac/Fast-SCNN-pytorch with the following modifications to make it compatible with translation to ONNX and then to FINN:
+--> The auxiliary output and the corresponding code in the training loop were removed since they are not being used in the training and can cause issues when translating the model to ONNX and then to FINN, which do not support multiple outputs.
+--> The interpolation upsamples in pyramid pooling and feature fusion modules were changed to use 'nearest' mode instead of 'bilinear' to avoid issues when translating the model to ONNX and then to FINN, which do not support 'bilinear' mode with align_corners=True.
 '''
 
 """Fast Segmentation Convolutional Neural Network"""
@@ -145,7 +144,7 @@ class PyramidPooling(nn.Module):
         return avgpool(x)
 
     def upsample(self, x, size):
-        return F.interpolate(x, size, mode='nearest-exact')
+        return F.interpolate(x, size, mode='nearest')
 
     def forward(self, x):
         size = x.size()[2:]
@@ -218,7 +217,7 @@ class FeatureFusionModule(nn.Module):
         self.relu = nn.ReLU(True)
 
     def forward(self, higher_res_feature, lower_res_feature):
-        lower_res_feature = F.interpolate(lower_res_feature, scale_factor=4, mode='nearest-exact')
+        lower_res_feature = F.interpolate(lower_res_feature, scale_factor=4, mode='nearest')
         lower_res_feature = self.dwconv(lower_res_feature)
         lower_res_feature = self.conv_lower_res(lower_res_feature)
 

@@ -9,8 +9,12 @@ warnings.filterwarnings('once') # Exibe cada aviso apenas uma vez para evitar po
 # -- DEFINICAO DE VARIAVEIS DE AMBIENTE --
 os.environ['ROCR_VISIBLE_DEVICES'] = '0' # Define quais GPUs AMD estão visíveis para o PyTorch. Use '0' para a primeira GPU, '1' para a segunda, etc.
 os.environ['TORCH_USE_HIP_DSA'] = '1' # Habilita o uso de Direct Storage Access (DSA) para melhorar a performance em GPUs AMD.
-# Usar apenass para debugging, pois causa problemas de performance e estabilidade em alguns casos.
-os.environ['AMD_SERIALIZE_KERNEL'] = '3' # Habilita a serializacao de kernels para depuração e analise de desempenho.
+
+# Usar apenas para debugging, pois causa problemas de performance e estabilidade em alguns casos.
+#os.environ['AMD_SERIALIZE_KERNEL'] = '3' # Habilita a serializacao de kernels para depuração e analise de desempenho.
+
+# Usar apenas para gerar o QONNX pelo Brevitas. Desabilitar em qualquer outra circunstancia.
+os.environ['BREVITAS_JIT'] = '0' # Desabilita o Just-In-Time (JIT) do Brevitas, o que pode melhorar a compatibilidade e estabilidade em alguns casos, mas pode reduzir a performance.
 
 
 # -- DEFINICAO DE CONSTANTES --

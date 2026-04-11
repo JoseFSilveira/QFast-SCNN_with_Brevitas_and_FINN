@@ -8,6 +8,7 @@
 From repo https://github.com/Tramac/Fast-SCNN-pytorch with the following modifications to make it compatible with translation to ONNX and then to FINN:
 --> The auxiliary output and the corresponding code in the training loop were removed since they are not being used in the training and can cause issues when translating the model to ONNX and then to FINN, which do not support multiple outputs.
 --> The interpolation upsamples in pyramid pooling and feature fusion modules were changed to use 'nearest' mode instead of 'bilinear' to avoid issues when translating the model to ONNX and then to FINN, which do not support 'bilinear' mode with align_corners=True.
+--> The pool sizes in the pyramid pooling module were changed to be divisible by the input image size (in this case 32 and 64) to avoid issues when translating the model to ONNX and then to FINN.
 '''
 
 """Fast Segmentation Convolutional Neural Network"""
@@ -150,8 +151,8 @@ class PyramidPooling(nn.Module):
         size = x.size()[2:]
         feat1 = self.upsample(self.conv1(self.pool(x, 1)), size)
         feat2 = self.upsample(self.conv2(self.pool(x, 2)), size)
-        feat3 = self.upsample(self.conv3(self.pool(x, 3)), size)
-        feat4 = self.upsample(self.conv4(self.pool(x, 6)), size)
+        feat3 = self.upsample(self.conv3(self.pool(x, 4)), size) # pool size from 3 to 4 since for onnx export the img size needs to be divisible by the pool size (in this case 32 and 64)
+        feat4 = self.upsample(self.conv4(self.pool(x, 8)), size) # pool size from 6 to 8 since for onnx export the img size needs to be divisible by the pool size (in this case 32 and 64)
         x = torch.cat([x, feat1, feat2, feat3, feat4], dim=1)
         x = self.out(x)
         return x

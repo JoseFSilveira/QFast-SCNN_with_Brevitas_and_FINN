@@ -1,12 +1,3 @@
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import brevitas.nn as qnn
-from brevitas.quant.scaled_int import Int8WeightPerTensorFloat, Uint8ActPerTensorFloat, Int8ActPerTensorFloat, Int8BiasPerTensorFloatInternalScaling
-from brevitas.quant_tensor import QuantTensor
-
-from config import BIT_WIDTH
-
 '''
 Based on the modified version of Fast-SCNN in models/FastSCNN.py, changing the tradicional torch.nn (nn) layers to brevitas.nn (qnn) layers.
 The following changes to make it compatible with quantization and translation to ONNX and then to FINN:
@@ -16,6 +7,16 @@ The following changes to make it compatible with quantization and translation to
 --> The last upsampling layer is removed to avoid a large upsampling factor with 'nearest' mode, which can comprimise severly the accuracy of the model.
   obs: The last upsampling layer can be done in external post-processing step, with the output of the model being passed to a CPU or small GPU.
 '''
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import brevitas.nn as qnn
+from brevitas.quant.scaled_int import Int8WeightPerTensorFloat, Uint8ActPerTensorFloat, Int8ActPerTensorFloat, Int8BiasPerTensorFloatInternalScaling
+from brevitas.quant_tensor import QuantTensor
+
+from config import BIT_WIDTH
+
 
 class QFastSCNN(nn.Module):
 
@@ -109,7 +110,7 @@ class LinearBottleneck(nn.Module):
         out = self.block(x)
         out = self.quant_sum(out)
         if self.use_shortcut:
-            out = self.quant_sum(x) + out
+            out = self.quant_sum(x + out)
         return out
 
 
@@ -125,9 +126,6 @@ class PyramidPooling(nn.Module):
         self.conv4 = _ConvBNReLU(in_channels, inter_channels, 1, **kwargs)
         self.out = _ConvBNReLU(in_channels * 2, out_channels, 1)
 
-        # Unpack method to ensure compatibility with torch.cat
-        #self.unpack = qnn.QuantIdentity(return_quant_tensor=False)
-
         # Added quantization concatenate tensors
         self.quant_cat = qnn.QuantIdentity(act_quant=Int8ActPerTensorFloat,
                                            bit_width=BIT_WIDTH,
@@ -139,7 +137,7 @@ class PyramidPooling(nn.Module):
 
     def upsample(self, x, size):
         # Added quantization for the upsampled features
-        quant_upsample = qnn.QuantUpsample(size, mode='nearest', return_quant_tensor=True)
+        quant_upsample = qnn.QuantUpsample(size, mode='nearest', return_quant_tensor=False)
         return quant_upsample(x)
 
     def forward(self, x):
@@ -148,18 +146,11 @@ class PyramidPooling(nn.Module):
         size = x.size()[2:]
         feat1 = self.upsample(self.conv1(self.pool(x, 1)), size)
         feat2 = self.upsample(self.conv2(self.pool(x, 2)), size)
-        feat3 = self.upsample(self.conv3(self.pool(x, 3)), size)
-        feat4 = self.upsample(self.conv4(self.pool(x, 6)), size)
+        feat3 = self.upsample(self.conv3(self.pool(x, 4)), size) # pool size from 3 to 4 since for onnx export the img size needs to be divisible by the pool size (in this case 32 and 64)
+        feat4 = self.upsample(self.conv4(self.pool(x, 8)), size) # pool size from 6 to 8 since for onnx export the img size needs to be divisible by the pool size (in this case 32 and 64)
 
-        # Requantize the tensors to ensure compatibility with torch.cat
-        x_c = self.quant_cat(x)
-        f1_c = self.quant_cat(feat1)
-        f2_c = self.quant_cat(feat2)
-        f3_c = self.quant_cat(feat3)
-        f4_c = self.quant_cat(feat4)
-
-        # Performing the concatenation with float tensors then quantizing the result
-        x = torch.cat([x_c, f1_c, f2_c, f3_c, f4_c], dim=1)
+        x = torch.cat([x, feat1, feat2, feat3, feat4], dim=1)
+        x = self.quant_cat(x)
         x = self.out(x)
         return x
 
@@ -247,7 +238,7 @@ class FeatureFusionModule(nn.Module):
         lower_res_feature = self.conv_lower_res(lower_res_feature)
 
         higher_res_feature = self.conv_higher_res(higher_res_feature)
-        out = self.quant_sum(higher_res_feature) + self.quant_sum(lower_res_feature)
+        out = self.quant_sum(higher_res_feature + lower_res_feature)
         return self.relu(out)
 
 

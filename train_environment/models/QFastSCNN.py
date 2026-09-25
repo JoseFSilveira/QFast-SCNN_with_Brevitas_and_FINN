@@ -21,7 +21,7 @@ from brevitas.quant.scaled_int import Int8WeightPerTensorFloat, Uint8ActPerTenso
 from brevitas.quant_tensor import QuantTensor
 from brevitas.inject.enum import *
 
-from config import BIT_WIDTH, IM_SIZE, CROP_SIZE
+from config import BIT_WIDTH, IM_SIZE
 
 
 def get_avgpool_callable(channels: int, kernel_size: tuple[int, int] | int, return_quant_tensor=False) -> nn.Module:

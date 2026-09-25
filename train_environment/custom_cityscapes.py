@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import json
 from pathlib import Path
 from tqdm.asyncio import tqdm
-from config import NUM_CLASSES, IGNORE_INDEX
+from config import NUM_CLASSES
 
 
 class CityscapesLables:
@@ -15,29 +15,34 @@ class CityscapesLables:
 
         # Definindo o numero de classes treinaveis (19 classes + 1 classe de ignorar)
         self.num_classes = NUM_CLASSES
-        self.ignore_index = IGNORE_INDEX
-
         # Criando listas dos nomes e das cores das classes treinaveis
         id_names = {}
         color_list = []
         lable_conversion = {}
         for c in datasets.Cityscapes.classes:
 
+            # O id -1 no tensor uint8 é lido como 255
+            pixel_val = 255 if c.id == -1 else c.id
+            
             # Adicionando valores ao dicionario de conversao de ids
-            lable_conversion[c.id] = c.train_id if c.train_id != -1 else self.ignore_index # A classe 'ignore' tem train_id -1, entao atribui o valor IGNORE_INDEX para ela
-            # Adicionando valores as listas de nomes e cores
-            if c.train_id != -1 and c.train_id != 255:
-                id_names[c.train_id] = c.name
-                color_list.append(c.color)
+            if c.train_id == 0: # Estrada
+                lable_conversion[pixel_val] = c.train_id
+            elif c.category_id == 7: # Veiculos
+                lable_conversion[pixel_val] = 1
+            else: # Outras classes (fundo, predios, calçada, etc)
+                lable_conversion[pixel_val] = 2
+        
+        # Definindo manualmente nomes e cores das classes treinaveis
+        id_names[0] = 'road'
+        id_names[1] = 'vehicle'
+        id_names[2] = 'other'
+        color_list = [(128, 64, 128), (0, 0, 142), (0, 0, 0)] # Cores para road, vehicle e other
 
         # Variavel para dicionario de nomes
-        id_names.update({self.ignore_index: 'ignore'}) # Adiciona a classe 'ignore' com train_id 255
         self.id_names = id_names
 
         # Variavel para lista de cores
-        train_colors_list = color_list
-        train_colors_list.append((0,0,0)) # Adiciona a cor preta para a classe 'ignore'. O cmap funcionara pois 255 constara como overflow e sera mapeado para a ultima cor da lista, que eh a preta
-        self.train_colors_list = train_colors_list
+        self.train_colors_list = color_list
         self.train_color_map = ['#%02x%02x%02x' % color for color in self.train_colors_list] # Criando o color map para imprimir imagens segmentadas
 
         # Criando o mapeamento para labels de treino
@@ -53,20 +58,20 @@ class CityscapesLables:
 
         '''
         Cria histograma de frequencia das classes no dataset, para poder usar class_weights
-        Eh esperado que o dataset ja esteja com as mascaras originais convertidas para 20 Classes (19 + ignore) usando o IdToTrainIdTransform
+        Eh esperado que o dataset ja esteja com as mascaras originais convertidas para 3 Classes usando o IdToTrainIdTransform
         '''
 
-        # Verificar se o dataset tem mascaras convertidas para 20 classes, caso contrario o histograma sera incorreto
+        # Verificar se o dataset tem mascaras convertidas para 3 classes, caso contrario o histograma sera incorreto
         _, mask = next(iter(dataloader))
-        if mask.max() != 255 or mask.min() < 0:
-            raise ValueError(f"Dataset com mascaras nao convertidas para {self.num_classes+1} classes. O histograma sera incorreto. Use o IdToTrainIdTransform para converter as mascaras antes de criar o dataset.")
+        if mask.max() != (self.num_classes-1) or mask.min() < 0:
+            raise ValueError(f"Dataset com mascaras nao convertidas para {self.num_classes} classes. O histograma sera incorreto. Use o IdToTrainIdTransform para converter as mascaras antes de criar o dataset.")
 
         # Criar histograma de frequencia das classes no dataset
-        class_count = torch.zeros(self.num_classes+1, dtype=torch.long, device=device) # Inicializa o contador de pixels para cada classe como um tensor de zeros
+        class_count = torch.zeros(self.num_classes, dtype=torch.long, device=device) # Inicializa o contador de pixels para cada classe como um tensor de zeros
         for _, mask in tqdm(dataloader, desc="Calculando histograma"):
             mask = mask.to(device) # Aloca as mascaras do batch no dispositivo
-            for c in range(self.num_classes+1):
-                # Conta o numero de pixels da classe c no batch e adiciona ao contador total. Para a classe 'ignore' (train_id 255), conta os pixels com valor 255
+            for c in range(self.num_classes):
+                # Conta o numero de pixels da classe c no batch e adiciona ao contador total.
                 class_count[c] += (mask == c).sum() if c != self.num_classes else (mask == self.ignore_index).sum()
 
         # Cria o grafico se print_histogram for True ou save_path for fornecido

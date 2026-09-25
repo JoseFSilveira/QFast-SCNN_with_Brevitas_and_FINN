@@ -11,6 +11,7 @@ import time
 from IPython.display import IFrame
 
 import custom_cityscapes as ccs
+from config import NUM_CLASSES
 
 def plot_leaning_rate_evolution(learning_rates: list[float]) -> None:
     plt.figure(figsize=(5, 5))
@@ -111,10 +112,10 @@ def img_show(imgs: list[torch.Tensor], smnts1: list[torch.Tensor], smnts2: list[
 
         axes[i, 0].imshow(img_to_show.permute(1,2,0)) # permute para mudar a ordem dos canais e converter um tensor para imagem
         axes[i, 0].axis('off')
-        axes[i, 1].imshow(smnts1[i], cmap=cmap, vmin=0, vmax=19) # vmin e vmax para garantir que a segmentacao seja mostrada com as mesmas cores, independente da quantidade de classes presentes em cada segmentacao
+        axes[i, 1].imshow(smnts1[i], cmap=cmap, vmin=0, vmax=NUM_CLASSES-1) # vmin e vmax para garantir que a segmentacao seja mostrada com as mesmas cores, independente da quantidade de classes presentes em cada segmentacao
         axes[i, 1].axis('off')
         if smnts2 is not None:
-            axes[i, 2].imshow(smnts2[i], cmap=cmap, vmin=0, vmax=19)
+            axes[i, 2].imshow(smnts2[i], cmap=cmap, vmin=0, vmax=NUM_CLASSES-1)
             axes[i, 2].axis('off')
     plt.show()
 

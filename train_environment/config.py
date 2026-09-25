@@ -21,7 +21,7 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True" # Habilita a 
 # -- DEFINICAO DE CONSTANTES --
 
 SCRIPT_MODE = "BOTH" # "TRAIN", "TEST" ou "BOTH"
-GENERATE_HISTOGRAM = False
+GENERATE_HISTOGRAM = True
 
 DATA_PATH = '../Cityscapes_Dataset/fine'
 
@@ -29,15 +29,15 @@ NUM_WORKERS = os.cpu_count() // 2 # Numero de workers para os dataloaders, ajust
 
 # Sizing and cropping configs
 #IM_HEIGHT = 512
-#IM_WIDTH = 1024
-IM_HEIGHT = 1024
-IM_WIDTH = 2048
+SQUARE_IM_WIDTH = 1024
+IM_HEIGHT = 512
+IM_WIDTH = 512
 IM_SIZE = [IM_HEIGHT, IM_WIDTH] # Tamanho da imagem de entrada para o modelo, que deve ser consistente com o tamanho das imagens do dataset.
-CROP_SIZE = [768, 768] # Tamanho do crop aleatorio aplicado durante a data augmentation, o qual ajuda a reduzir o uso de memoria durante o treinamento do modelo quantizado
+#CROP_SIZE = [768, 768] # Tamanho do crop aleatorio aplicado durante a data augmentation, o qual ajuda a reduzir o uso de memoria durante o treinamento do modelo quantizado
 
 # Dataset configs
-NUM_CLASSES = 19 # Numero de classes do dataset, excluindo a classe de ignorar (void)
-IGNORE_INDEX = 255 # Valor do pixel para a classe de ignorar (void)
+NUM_CLASSES = 3 # Numero de classes do dataset, excluindo a classe de ignorar (void)
+#IGNORE_INDEX = 255 # Valor do pixel para a classe de ignorar (void)
 
 # Original model Training Hyperparameters
 BATCH_SIZE = 12

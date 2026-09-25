@@ -2,7 +2,7 @@ import torch
 from torchvision.transforms import v2
 from torchvision.transforms import InterpolationMode
 from torchvision import tv_tensors  # <--- Importação necessária pára Augmentations
-from config import IM_HEIGHT, IM_WIDTH, CROP_SIZE, IGNORE_INDEX
+from config import IM_HEIGHT, IM_WIDTH, IM_SIZE, SQUARE_IM_WIDTH, NUM_CLASSES
 
 # -- Funcoes personalizadas para transformacoes -- #
 
@@ -42,6 +42,15 @@ class Transforms:
             # OBS: o restante da normalizacao (dividir por 255 e normalizar com media e desvio padrao) eh feito APOS a data augmentation
         ])
 
+        self.train_transform_square = v2.Compose([
+            #v2.Resize(size=conv_size, interpolation=InterpolationMode.BILINEAR), # redimensiona imagem
+            v2.PILToTensor(), # converte imagem PIL para tensor
+            v2.CenterCrop(SQUARE_IM_WIDTH), # faz um crop centralizado de 1024x1024
+            v2.Resize(size=IM_SIZE, interpolation=InterpolationMode.BILINEAR), # redimensiona imagem para 512x512
+            v2.ToDtype(torch.uint8) # apenas converte para inteiro sem normalizacao. Isso eh feito pois o algumas funcoes do DataAugmentation exigem que a imagem seja do tipo uint8
+            # OBS: o restante da normalizacao (dividir por 255 e normalizar com media e desvio padrao) eh feito APOS a data augmentation
+        ])
+
         self.val_transform = v2.Compose([
             #v2.Resize(size=conv_size, interpolation=InterpolationMode.BILINEAR), # redimensiona imagem para 256x512
             v2.PILToTensor(),
@@ -50,11 +59,12 @@ class Transforms:
         ])
 
         self.val_transform_square = v2.Compose([
-                            v2.PILToTensor(),
-                            v2.CenterCrop(IM_HEIGHT), # faz um crop centralizado de 1024x1024
-                            v2.ToDtype(torch.float32, scale=True),
-                            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) # Normaliza com media e desvio padrao do ImageNet
-                        ])
+            v2.PILToTensor(),
+            v2.CenterCrop(SQUARE_IM_WIDTH), # faz um crop centralizado de 1024x1024
+            v2.Resize(size=IM_SIZE, interpolation=InterpolationMode.BILINEAR), # redimensiona imagem para 512x512
+            v2.ToDtype(torch.float32, scale=True),
+            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) # Normaliza com media e desvio padrao do ImageNet
+        ])
 
         # -- TARGET TRANFROMS -- #
         self.target_transform = v2.Compose([
@@ -68,8 +78,9 @@ class Transforms:
         # -- TARGET 1:1 TRANFROMS -- #
         self.target_transform_square = v2.Compose([
             v2.PILToTensor(), # converte segmentação PIL para tensor
-            v2.CenterCrop(IM_HEIGHT), # faz um crop centralizado de 1024x1024
             IdToTrainIdTransform(lable_conversion), # converte ids originais para ids de treino
+            v2.CenterCrop(SQUARE_IM_WIDTH), # faz um crop centralizado de 1024x1024
+            v2.Resize(size=IM_SIZE, interpolation=InterpolationMode.NEAREST_EXACT), # redimensiona imagem para 512x512
             v2.Lambda(mask_squeeze), # remove canal extra desnecessário na segmentação
             v2.ToDtype(torch.uint8) # apenas converte para inteiro sem normalizacao
         ])
@@ -79,10 +90,8 @@ class Transforms:
 
             # Transformações Geométricas
             v2.RandomHorizontalFlip(p=0.5),
-            v2.ScaleJitter(target_size=(IM_HEIGHT, IM_WIDTH), scale_range=(0.5, 2.0), antialias=True), # Redimensiona aleatoriamente entre 50% e 200% do tamanho base
-            v2.RandomRotation(degrees=2, interpolation=InterpolationMode.BILINEAR, expand=False, center=None, fill={tv_tensors.Image: (0,0,0), tv_tensors.Mask: IGNORE_INDEX}),
-            v2.RandomCrop(size=CROP_SIZE, pad_if_needed=True,
-                          fill={tv_tensors.Image: (0,0,0), tv_tensors.Mask: IGNORE_INDEX}), # Corta aleatoriamente uma região de 768x768, preenchendo com preto ou IGNORE_INDEX se necessário
+            #v2.ScaleJitter(target_size=IM_SIZE, scale_range=(0.5, 2.0), antialias=True), # Redimensiona aleatoriamente entre 50% e 200% do tamanho base
+            v2.RandomRotation(degrees=2, interpolation=InterpolationMode.BILINEAR, expand=False, center=None, fill={tv_tensors.Image: (0,0,0), tv_tensors.Mask: NUM_CLASSES-1}),
             
             # Transformações Fotométricas (O v2 aplica AUTOMATICAMENTE só na Imagem)
             v2.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),

@@ -5,7 +5,7 @@ torchmetrics == 1.8.2
 tqdm == 4.67.3
 kornia == 0.8.2
 brevitas == 0.12.1
-netron == 8.9.9
+netron == 9.3.0
 onnx == 1.21.0
 onnxscript == 0.6.2
 onnxoptimizer == 0.4.2

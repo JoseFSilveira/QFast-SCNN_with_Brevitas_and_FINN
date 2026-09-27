@@ -16,6 +16,9 @@ class EvalModel():
         if state_dict_path is not None:
             self.load_state_dict()
 
+        # Compila o modelo para melhorar a performance.
+        self.model = torch.compile(self.model)
+
         if results_path is not None:
             self.train_results = self.load_results()
 

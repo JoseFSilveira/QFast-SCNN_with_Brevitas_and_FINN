@@ -7,6 +7,7 @@
 '''
 From repo https://github.com/Tramac/Fast-SCNN-pytorch with the following modifications to make it compatible with translation to ONNX and then to FINN:
 --> The auxiliary output and the corresponding code in the training loop were removed since they are not being used in the training and can cause issues when translating the model to ONNX and then to FINN, which do not support multiple outputs.
+--> Expand factor 't' reduced from 6 to 1 in the GlobalFeatureExtractor to reduce the number of parameters.
 --> The interpolation upsamples in pyramid pooling and feature fusion modules were changed to use 'nearest' mode instead of 'bilinear' to avoid issues when translating the model to ONNX and then to FINN, which do not support 'bilinear' mode with align_corners=True.
 --> The pool sizes in the pyramid pooling module were changed to be divisible by the input image size (in this case 32 and 64) to avoid issues when translating the model to ONNX and then to FINN.
 '''
@@ -24,7 +25,7 @@ class FastSCNN(nn.Module):
         super(FastSCNN, self).__init__()
         #self.aux = aux
         self.learning_to_downsample = LearningToDownsample(32, 48, 64)
-        self.global_feature_extractor = GlobalFeatureExtractor(64, [64, 96, 128], 128, 6, [3, 3, 3])
+        self.global_feature_extractor = GlobalFeatureExtractor(in_channels=64, block_channels=[64, 96, 128], out_channels=128, t=1, num_blocks=[3, 3, 3])
         self.feature_fusion = FeatureFusionModule(64, 128, 128)
         self.classifier = Classifer(128, num_classes)
         # Removing the tuple output since it can cause issues when translating the model to ONNX and then to FINN, and the auxiliary output is not being used in the training loop

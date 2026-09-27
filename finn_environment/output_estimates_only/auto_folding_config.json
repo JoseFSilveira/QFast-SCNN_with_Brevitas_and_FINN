@@ -7,20 +7,20 @@
     "depth_trigger_bram": 0
   },
   "ConvolutionInputGenerator_rtl_0": {
-    "SIMD": 3,
+    "SIMD": 1,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "MVAU_rtl_0": {
-    "PE": 4,
-    "SIMD": 9,
+    "PE": 1,
+    "SIMD": 27,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
   "Thresholding_rtl_1": {
-    "PE": 2,
+    "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
@@ -29,12 +29,12 @@
     "SIMD": 32
   },
   "ConvolutionInputGenerator_rtl_1": {
-    "SIMD": 4,
+    "SIMD": 2,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "VVAU_hls_0": {
-    "PE": 4,
+    "PE": 2,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
@@ -49,7 +49,7 @@
   },
   "MVAU_rtl_1": {
     "PE": 1,
-    "SIMD": 16,
+    "SIMD": 8,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -65,12 +65,12 @@
     "SIMD": 48
   },
   "ConvolutionInputGenerator_rtl_2": {
-    "SIMD": 2,
+    "SIMD": 1,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "VVAU_hls_1": {
-    "PE": 2,
+    "PE": 1,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
@@ -85,7 +85,7 @@
   },
   "MVAU_rtl_2": {
     "PE": 1,
-    "SIMD": 8,
+    "SIMD": 4,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -101,7 +101,7 @@
     "PE": 1
   },
   "MVAU_rtl_3": {
-    "PE": 8,
+    "PE": 1,
     "SIMD": 8,
     "ram_style": "block",
     "resType": "auto",
@@ -109,8 +109,8 @@
     "runtime_writeable_weights": 0
   },
   "MVAU_rtl_4": {
-    "PE": 4,
-    "SIMD": 8,
+    "PE": 1,
+    "SIMD": 16,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -129,15 +129,15 @@
     "depth_trigger_bram": 0
   },
   "FMPadding_rtl_2": {
-    "SIMD": 384
+    "SIMD": 64
   },
   "ConvolutionInputGenerator_rtl_3": {
-    "SIMD": 3,
+    "SIMD": 1,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "VVAU_hls_2": {
-    "PE": 3,
+    "PE": 1,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
@@ -151,8 +151,8 @@
     "depth_trigger_bram": 0
   },
   "MVAU_rtl_5": {
-    "PE": 2,
-    "SIMD": 8,
+    "PE": 1,
+    "SIMD": 2,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -169,7 +169,7 @@
   },
   "MVAU_rtl_6": {
     "PE": 1,
-    "SIMD": 16,
+    "SIMD": 2,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -188,15 +188,15 @@
     "depth_trigger_bram": 0
   },
   "FMPadding_rtl_3": {
-    "SIMD": 384
+    "SIMD": 64
   },
   "ConvolutionInputGenerator_rtl_4": {
-    "SIMD": 3,
+    "SIMD": 1,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "VVAU_hls_3": {
-    "PE": 3,
+    "PE": 1,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
@@ -210,8 +210,8 @@
     "depth_trigger_bram": 0
   },
   "MVAU_rtl_7": {
-    "PE": 2,
-    "SIMD": 8,
+    "PE": 1,
+    "SIMD": 2,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -243,7 +243,7 @@
   },
   "MVAU_rtl_8": {
     "PE": 1,
-    "SIMD": 16,
+    "SIMD": 2,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -262,15 +262,15 @@
     "depth_trigger_bram": 0
   },
   "FMPadding_rtl_4": {
-    "SIMD": 384
+    "SIMD": 64
   },
   "ConvolutionInputGenerator_rtl_5": {
-    "SIMD": 3,
+    "SIMD": 1,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "VVAU_hls_4": {
-    "PE": 3,
+    "PE": 1,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
@@ -284,8 +284,8 @@
     "depth_trigger_bram": 0
   },
   "MVAU_rtl_9": {
-    "PE": 2,
-    "SIMD": 8,
+    "PE": 1,
+    "SIMD": 2,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -314,7 +314,7 @@
   },
   "MVAU_rtl_10": {
     "PE": 1,
-    "SIMD": 16,
+    "SIMD": 2,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -327,7 +327,7 @@
     "depth_trigger_bram": 0
   },
   "FMPadding_rtl_5": {
-    "SIMD": 384
+    "SIMD": 64
   },
   "ConvolutionInputGenerator_rtl_6": {
     "SIMD": 1,
@@ -350,7 +350,7 @@
   },
   "MVAU_rtl_11": {
     "PE": 1,
-    "SIMD": 6,
+    "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -367,7 +367,7 @@
   },
   "MVAU_rtl_12": {
     "PE": 1,
-    "SIMD": 12,
+    "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -386,7 +386,7 @@
     "depth_trigger_bram": 0
   },
   "FMPadding_rtl_6": {
-    "SIMD": 576
+    "SIMD": 96
   },
   "ConvolutionInputGenerator_rtl_7": {
     "SIMD": 1,
@@ -409,7 +409,7 @@
   },
   "MVAU_rtl_13": {
     "PE": 1,
-    "SIMD": 9,
+    "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -441,7 +441,7 @@
   },
   "MVAU_rtl_14": {
     "PE": 1,
-    "SIMD": 12,
+    "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -460,7 +460,7 @@
     "depth_trigger_bram": 0
   },
   "FMPadding_rtl_7": {
-    "SIMD": 576
+    "SIMD": 96
   },
   "ConvolutionInputGenerator_rtl_8": {
     "SIMD": 1,
@@ -483,7 +483,7 @@
   },
   "MVAU_rtl_15": {
     "PE": 1,
-    "SIMD": 9,
+    "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -512,7 +512,7 @@
   },
   "MVAU_rtl_16": {
     "PE": 1,
-    "SIMD": 12,
+    "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -525,7 +525,7 @@
     "depth_trigger_bram": 0
   },
   "FMPadding_rtl_8": {
-    "SIMD": 576
+    "SIMD": 96
   },
   "ConvolutionInputGenerator_rtl_9": {
     "SIMD": 1,
@@ -548,7 +548,7 @@
   },
   "MVAU_rtl_17": {
     "PE": 1,
-    "SIMD": 12,
+    "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -565,7 +565,7 @@
   },
   "MVAU_rtl_18": {
     "PE": 1,
-    "SIMD": 16,
+    "SIMD": 2,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -584,15 +584,15 @@
     "depth_trigger_bram": 0
   },
   "FMPadding_rtl_9": {
-    "SIMD": 768
+    "SIMD": 128
   },
   "ConvolutionInputGenerator_rtl_10": {
-    "SIMD": 2,
+    "SIMD": 1,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "VVAU_hls_9": {
-    "PE": 2,
+    "PE": 1,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
@@ -606,8 +606,8 @@
     "depth_trigger_bram": 0
   },
   "MVAU_rtl_19": {
-    "PE": 2,
-    "SIMD": 8,
+    "PE": 1,
+    "SIMD": 2,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -639,7 +639,7 @@
   },
   "MVAU_rtl_20": {
     "PE": 1,
-    "SIMD": 16,
+    "SIMD": 2,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -658,15 +658,15 @@
     "depth_trigger_bram": 0
   },
   "FMPadding_rtl_10": {
-    "SIMD": 768
+    "SIMD": 128
   },
   "ConvolutionInputGenerator_rtl_11": {
-    "SIMD": 2,
+    "SIMD": 1,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "VVAU_hls_10": {
-    "PE": 2,
+    "PE": 1,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
@@ -680,8 +680,8 @@
     "depth_trigger_bram": 0
   },
   "MVAU_rtl_21": {
-    "PE": 2,
-    "SIMD": 8,
+    "PE": 1,
+    "SIMD": 2,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -857,7 +857,7 @@
   },
   "MVAU_rtl_22": {
     "PE": 1,
-    "SIMD": 8,
+    "SIMD": 4,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -873,12 +873,12 @@
     "SIMD": 128
   },
   "ConvolutionInputGenerator_rtl_16": {
-    "SIMD": 4,
+    "SIMD": 2,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "VVAU_hls_15": {
-    "PE": 4,
+    "PE": 2,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
@@ -892,7 +892,7 @@
     "depth_trigger_bram": 0
   },
   "MVAU_rtl_23": {
-    "PE": 8,
+    "PE": 4,
     "SIMD": 8,
     "ram_style": "block",
     "resType": "auto",
@@ -924,12 +924,12 @@
     "SIMD": 128
   },
   "ConvolutionInputGenerator_rtl_17": {
-    "SIMD": 4,
+    "SIMD": 2,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "VVAU_hls_16": {
-    "PE": 4,
+    "PE": 2,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
@@ -943,7 +943,7 @@
     "depth_trigger_bram": 0
   },
   "MVAU_rtl_24": {
-    "PE": 8,
+    "PE": 4,
     "SIMD": 8,
     "ram_style": "block",
     "resType": "auto",
@@ -960,12 +960,12 @@
     "SIMD": 128
   },
   "ConvolutionInputGenerator_rtl_18": {
-    "SIMD": 4,
+    "SIMD": 2,
     "parallel_window": 0,
     "ram_style": "block"
   },
   "VVAU_hls_17": {
-    "PE": 4,
+    "PE": 2,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
@@ -979,7 +979,7 @@
     "depth_trigger_bram": 0
   },
   "MVAU_rtl_25": {
-    "PE": 8,
+    "PE": 4,
     "SIMD": 8,
     "ram_style": "block",
     "resType": "auto",
@@ -994,7 +994,7 @@
   },
   "MVAU_rtl_26": {
     "PE": 1,
-    "SIMD": 8,
+    "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",

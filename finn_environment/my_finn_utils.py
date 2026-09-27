@@ -49,19 +49,30 @@ def generate_cityscapes_labels():
 
     # Criando listas dos nomes e das cores das classes treinaveis
     id_names = {}
-    color_list = []
     lable_conversion = {}
     for c in Cityscapes.classes:
-
+    
+        # O id -1 no tensor uint8 é lido como 255
+        pixel_val = IGNORE_INDEX if c.id == -1 else c.id
+        
         # Adicionando valores ao dicionario de conversao de ids
-        lable_conversion[c.id] = c.train_id if c.train_id != -1 else IGNORE_INDEX # A classe 'ignore' tem train_id -1, entao atribui o valor IGNORE_INDEX para ela
-        # Adicionando valores as listas de nomes e cores
-        if c.train_id != -1 and c.train_id != 255:
-            id_names[c.train_id] = c.name
-            color_list.append(c.color)
-
-    # Variavel para dicionario de nomes
-    id_names.update({IGNORE_INDEX: 'ignore'}) # Adiciona a classe 'ignore' com train_id 255
+        if c.name == "road": # Estrada
+            lable_conversion[pixel_val] = c.train_id
+        elif c.category == "vehicle": # Veiculos
+            lable_conversion[pixel_val] = 1
+        elif c.category == "human": # Pedestres
+            lable_conversion[pixel_val] = 2
+        elif c.train_id != IGNORE_INDEX: # Outras classes (fundo, predios, calçada, etc)
+            lable_conversion[pixel_val] = 3
+        else: # Ignorar
+            lable_conversion[pixel_val] = IGNORE_INDEX
+    
+    # Definindo manualmente nomes e cores das classes treinaveis
+    id_names[0] = 'road'
+    id_names[1] = 'vehicle'
+    id_names[2] = 'human'
+    id_names[3] = 'other'
+    id_names[IGNORE_INDEX] = 'ignore'
 
     return lable_conversion, id_names
 

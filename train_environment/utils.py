@@ -112,10 +112,10 @@ def img_show(imgs: list[torch.Tensor], smnts1: list[torch.Tensor], smnts2: list[
 
         axes[i, 0].imshow(img_to_show.permute(1,2,0)) # permute para mudar a ordem dos canais e converter um tensor para imagem
         axes[i, 0].axis('off')
-        axes[i, 1].imshow(smnts1[i], cmap=cmap, vmin=0, vmax=NUM_CLASSES-1) # vmin e vmax para garantir que a segmentacao seja mostrada com as mesmas cores, independente da quantidade de classes presentes em cada segmentacao
+        axes[i, 1].imshow(smnts1[i], cmap=cmap, vmin=0, vmax=NUM_CLASSES) # vmin e vmax para garantir que a segmentacao seja mostrada com as mesmas cores, independente da quantidade de classes presentes em cada segmentacao
         axes[i, 1].axis('off')
         if smnts2 is not None:
-            axes[i, 2].imshow(smnts2[i], cmap=cmap, vmin=0, vmax=NUM_CLASSES-1)
+            axes[i, 2].imshow(smnts2[i], cmap=cmap, vmin=0, vmax=NUM_CLASSES)
             axes[i, 2].axis('off')
     plt.show()
 
@@ -173,6 +173,27 @@ def dataset_show(dataset, n:int = 5, predict_masks: bool=False, model: torch.nn.
     img_show(imgs=img_list, smnts1=smnt_list, smnts2=pred_smnt_list,
              n=n,col_names=col_names, cmap=cmap)
     
+
+def load_size_compatible_state_dict(model: torch.nn.Module, path: str) -> torch.nn.Module | tuple[torch.nn.Module, dict]:
+    # Carregar os pesos originais pré-treinados
+    pretrained_dict = torch.load(f=path)
+
+    # Pegar o dicionario do modelo modificado
+    model_dict = model.state_dict()
+
+    # Filtrar os pesos: manter apenas os com o mesmo nome e tamanho (shape)
+    filtered_dict = {
+        k: v for k, v in pretrained_dict.items() 
+        if k in model_dict and v.shape == model_dict[k].shape
+    }
+
+    # Atualizar o novo modelo apenas com os pesos compatíveis
+    model_dict.update(filtered_dict)
+    model.load_state_dict(model_dict, strict=False)
+
+    return model
+
+
 def load_state_dict(model: torch.nn.Module, path: str, strict: bool = True, ignore_key_name: list=None) -> torch.nn.Module | tuple[torch.nn.Module, dict]:
 
     # Carregando apenas os parametros (state_dict()), pois isso flexibiliza o modelo e evita erros de incompatibilidade com parametros e caminhos do modelo original

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import json
 from pathlib import Path
 from tqdm.asyncio import tqdm
-from config import NUM_CLASSES
+from config import NUM_CLASSES, IGNORE_INDEX
 
 
 class CityscapesLables:
@@ -15,28 +15,36 @@ class CityscapesLables:
 
         # Definindo o numero de classes treinaveis (19 classes + 1 classe de ignorar)
         self.num_classes = NUM_CLASSES
+        self.ignore_index = IGNORE_INDEX
         # Criando listas dos nomes e das cores das classes treinaveis
         id_names = {}
         color_list = []
         lable_conversion = {}
+
         for c in datasets.Cityscapes.classes:
 
             # O id -1 no tensor uint8 é lido como 255
-            pixel_val = 255 if c.id == -1 else c.id
+            pixel_val = IGNORE_INDEX if c.id == -1 else c.id
             
             # Adicionando valores ao dicionario de conversao de ids
-            if c.train_id == 0: # Estrada
+            if c.name == "road": # Estrada
                 lable_conversion[pixel_val] = c.train_id
-            elif c.category_id == 7: # Veiculos
+            elif c.category == "vehicle": # Veiculos
                 lable_conversion[pixel_val] = 1
-            else: # Outras classes (fundo, predios, calçada, etc)
+            elif c.category == "human": # Pedestres
                 lable_conversion[pixel_val] = 2
+            elif c.train_id != IGNORE_INDEX: # Outras classes (fundo, predios, calçada, etc)
+                lable_conversion[pixel_val] = 3
+            else: # Ignorar
+                lable_conversion[pixel_val] = IGNORE_INDEX
         
         # Definindo manualmente nomes e cores das classes treinaveis
         id_names[0] = 'road'
         id_names[1] = 'vehicle'
-        id_names[2] = 'other'
-        color_list = [(128, 64, 128), (0, 0, 142), (0, 0, 0)] # Cores para road, vehicle e other
+        id_names[2] = 'human'
+        id_names[3] = 'other'
+        id_names[IGNORE_INDEX] = 'ignore'
+        color_list = [(128, 64, 128), (0, 0, 142), (220, 20, 60), (128, 128, 128),(0, 0, 0)] # Cores para road, vehicle, human, others e ignore (preto)
 
         # Variavel para dicionario de nomes
         self.id_names = id_names
@@ -63,15 +71,15 @@ class CityscapesLables:
 
         # Verificar se o dataset tem mascaras convertidas para 3 classes, caso contrario o histograma sera incorreto
         _, mask = next(iter(dataloader))
-        if mask.max() != (self.num_classes-1) or mask.min() < 0:
-            raise ValueError(f"Dataset com mascaras nao convertidas para {self.num_classes} classes. O histograma sera incorreto. Use o IdToTrainIdTransform para converter as mascaras antes de criar o dataset.")
+        if mask.max() != (self.ignore_index) or mask.min() < 0:
+            raise ValueError(f"Dataset com mascaras nao convertidas para {self.num_classes+1} classes. O histograma sera incorreto. Use o IdToTrainIdTransform para converter as mascaras antes de criar o dataset.")
 
         # Criar histograma de frequencia das classes no dataset
-        class_count = torch.zeros(self.num_classes, dtype=torch.long, device=device) # Inicializa o contador de pixels para cada classe como um tensor de zeros
+        class_count = torch.zeros(self.num_classes+1, dtype=torch.long, device=device) # Inicializa o contador de pixels para cada classe como um tensor de zeros
         for _, mask in tqdm(dataloader, desc="Calculando histograma"):
             mask = mask.to(device) # Aloca as mascaras do batch no dispositivo
-            for c in range(self.num_classes):
-                # Conta o numero de pixels da classe c no batch e adiciona ao contador total.
+            for c in range(self.num_classes+1):
+                # Conta o numero de pixels da classe c no batch e adiciona ao contador total. Para a classe 'ignore' (train_id 255), conta os pixels com valor 255
                 class_count[c] += (mask == c).sum() if c != self.num_classes else (mask == self.ignore_index).sum()
 
         # Cria o grafico se print_histogram for True ou save_path for fornecido
@@ -86,7 +94,8 @@ class CityscapesLables:
 
             # Salva a imagem caso a variavel save_path for nao nula
             if save_path is not None:
-                img_file = Path(save_path) / "dataset_histogram.png"
+                print(f"Salvando histograma de frequencia das classes no dataset em {save_path}")
+                img_file = Path(save_path) / Path("dataset_histogram.png")
                 plt.savefig(img_file, bbox_inches='tight')
 
             # Imprime o histograma se print_histogram for True

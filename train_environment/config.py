@@ -21,7 +21,7 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True" # Habilita a 
 # -- DEFINICAO DE CONSTANTES --
 
 SCRIPT_MODE = "BOTH" # "TRAIN", "TEST" ou "BOTH"
-GENERATE_HISTOGRAM = True
+GENERATE_HISTOGRAM = False
 
 DATA_PATH = '../Cityscapes_Dataset/fine'
 
@@ -36,16 +36,19 @@ IM_SIZE = [IM_HEIGHT, IM_WIDTH] # Tamanho da imagem de entrada para o modelo, qu
 #CROP_SIZE = [768, 768] # Tamanho do crop aleatorio aplicado durante a data augmentation, o qual ajuda a reduzir o uso de memoria durante o treinamento do modelo quantizado
 
 # Dataset configs
-NUM_CLASSES = 3 # Numero de classes do dataset, excluindo a classe de ignorar (void)
-#IGNORE_INDEX = 255 # Valor do pixel para a classe de ignorar (void)
+NUM_CLASSES = 4 # Numero de classes do dataset, excluindo a classe de ignorar (void)
+IGNORE_INDEX = 255 # Valor do pixel para a classe de ignorar (void)
 
 # Original model Training Hyperparameters
-BATCH_SIZE = 12
-EPOCHS = 100
-LEARNING_RATE = 5e-5
+BATCH_SIZE = 32
+#EPOCHS = 100
+EPOCHS = 10
+LEARNING_RATE = 1e-4
 
 # Quantized model training hyperparameters
 BIT_WIDTH = 8
-QAT_BATCH_SIZE = 12 # Batch size menor ou igual ao original para o treinamento do modelo quantizado, para evitar problemas de memoria. Ajuste conforme a capacidade da sua GPU.
-QAT_EPOCHS = 50 # Treinar por menos epocas do que o modelo original, pois o modelo quantizado tem menos capacidade e pode convergir mais rapido
-QAT_LEARNING_RATE = 5e-5
+QAT_BATCH_SIZE = 32 # Batch size menor ou igual ao original para o treinamento do modelo quantizado, para evitar problemas de memoria. Ajuste conforme a capacidade da sua GPU.
+
+#QAT_EPOCHS = 50 # Treinar por menos epocas do que o modelo original, pois o modelo quantizado tem menos capacidade e pode convergir mais rapido
+QAT_EPOCHS = 10
+QAT_LEARNING_RATE = 1e-4

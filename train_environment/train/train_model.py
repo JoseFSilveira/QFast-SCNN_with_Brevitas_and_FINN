@@ -3,14 +3,14 @@ import torch
 from torch import optim
 from tqdm.auto import tqdm
 from pathlib import Path
-from config import NUM_CLASSES
+from config import NUM_CLASSES, LEARNING_RATE
 
 class TrainModel:
   
     def __init__(self, model: torch.nn.Module, loss_fn: callable, optim_fn: callable, metrics: dict,
                  val_to_monitor: str="loss",
                  scheduler_name: str="ReduceLROnPlateau", # Opcoes: "OneCycleLR" ou "ReduceLROnPlateau"
-                 max_lr: float=1e-3, # valido apenas para o OneCycleLR, e ignorado caso scheduler_fn seja diferente de "OneCycleLR"
+                 div_factor: int=10, # valido apenas para o OneCycleLR, e ignorado caso scheduler_fn seja diferente de "OneCycleLR"
                  epochs: int = 5,
                  accumulation_steps: int = 1, # Numero de batches para acumular os gradientes antes de realizar o passo de otimizacao
                  device: torch.device='cpu') -> None:
@@ -19,7 +19,7 @@ class TrainModel:
         self.val_to_monitor = val_to_monitor
         self.epochs = epochs
         self.device = device
-        self.max_lr = max_lr
+        self.div_factor = div_factor
         self.accumulation_steps = accumulation_steps
         self.num_classes = NUM_CLASSES
 
@@ -71,11 +71,11 @@ class TrainModel:
         if self.scheduler_name == "OneCycleLR":
             self.scheduler_fn = optim.lr_scheduler.OneCycleLR(
                 self.optim_fn,
-                max_lr=self.max_lr,           # O pico da taxa de aprendizado
+                max_lr=LEARNING_RATE,         # O pico da taxa de aprendizado
                 epochs=self.epochs,           # Total de épocas
                 steps_per_epoch=len(dataloader), # Quantidade de batches por época
                 pct_start=0.3,                # Gasta 30% do treino subindo o LR, e 70% descendo
-                div_factor=10.0,              # LR inicial sera max_lr / 10 (ou seja, começa em 1e-4)
+                div_factor=self.div_factor,   # LR inicial sera max_lr / 10 (ou seja, começa em 1e-4)
                 final_div_factor=1000.0       # LR final será muito próximo de zero
         )
             

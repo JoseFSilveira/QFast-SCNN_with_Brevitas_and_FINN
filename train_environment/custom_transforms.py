@@ -2,7 +2,7 @@ import torch
 from torchvision.transforms import v2
 from torchvision.transforms import InterpolationMode
 from torchvision import tv_tensors  # <--- Importação necessária pára Augmentations
-from config import IM_HEIGHT, IM_WIDTH, IM_SIZE, SQUARE_IM_WIDTH, NUM_CLASSES
+from config import IM_HEIGHT, IM_WIDTH, IM_SIZE, SQUARE_IM_WIDTH, NUM_CLASSES, IGNORE_INDEX
 
 # -- Funcoes personalizadas para transformacoes -- #
 
@@ -91,7 +91,7 @@ class Transforms:
             # Transformações Geométricas
             v2.RandomHorizontalFlip(p=0.5),
             #v2.ScaleJitter(target_size=IM_SIZE, scale_range=(0.5, 2.0), antialias=True), # Redimensiona aleatoriamente entre 50% e 200% do tamanho base
-            v2.RandomRotation(degrees=2, interpolation=InterpolationMode.BILINEAR, expand=False, center=None, fill={tv_tensors.Image: (0,0,0), tv_tensors.Mask: NUM_CLASSES-1}),
+            v2.RandomRotation(degrees=2, interpolation=InterpolationMode.BILINEAR, expand=False, center=None, fill={tv_tensors.Image: (0,0,0), tv_tensors.Mask: IGNORE_INDEX}),
             
             # Transformações Fotométricas (O v2 aplica AUTOMATICAMENTE só na Imagem)
             v2.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),

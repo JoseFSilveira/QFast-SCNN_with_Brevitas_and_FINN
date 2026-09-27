@@ -85,7 +85,7 @@ class QFastSCNN(nn.Module):
 
         self.inp_quant = qnn.QuantIdentity(act_quant=Int8ActPerTensorFloat, return_quant_tensor=True)
         self.learning_to_downsample = LearningToDownsample(32, 48, 64)
-        self.global_feature_extractor = GlobalFeatureExtractor(64, [64, 96, 128], 128, 6, [3, 3, 3])
+        self.global_feature_extractor = GlobalFeatureExtractor(in_channels=64, block_channels=[64, 96, 128], out_channels=128, t=1, num_blocks=[3, 3, 3])
         self.feature_fusion = FeatureFusionModule(64, 128, 128)
         self.classifier = Classifer(128, num_classes)
 
@@ -211,26 +211,17 @@ class PyramidPooling(nn.Module):
 
         # [pool_out_H, pool_out_W] = [in_H, in_W] / kernel_size
         # in_H and in_W are equal to the model input image sizes divided by 32.
-        in_H_train = CROP_SIZE[0] // 32
-        in_H_test = IM_SIZE[0] // 32
+        in_H = IM_SIZE[0] // 32
         self.pool_out_H = [1, 2, 4, 8]  # Kernel sizes for the pyramid pooling layers
-        self.kernel_size_train = [in_H_train // pool_out for pool_out in self.pool_out_H]  # Kernel sizes for the pyramid pooling layers during training
-        self.kernel_size_test = [in_H_test // pool_out for pool_out in self.pool_out_H]  # Kernel sizes for the pyramid pooling layers during testing
+        self.kernel_size = [in_H // pool_out for pool_out in self.pool_out_H]  # Kernel sizes for the pyramid pooling layers during training
 
         # The original model uses adaptive average pooling, which can be replaced by a standard Average Pooling with pre-defined kernel sizes.
         # Necessary to create new instance for each pool size since the output size is a parameter in the quantized version.
 
-        # For train the input size is [768, 768], so the kernel sizes are [768, 384, 192, 96]
-        self.pool1_train = get_avgpool_callable(in_channels, self.kernel_size_train[0], return_quant_tensor=True)
-        self.pool2_train = get_avgpool_callable(in_channels, self.kernel_size_train[1], return_quant_tensor=True)
-        self.pool3_train = get_avgpool_callable(in_channels, self.kernel_size_train[2], return_quant_tensor=True)
-        self.pool4_train = get_avgpool_callable(in_channels, self.kernel_size_train[3], return_quant_tensor=True)
-
-        # For train the input size is [1024, 2048], so the kernel sizes are [1024, 512, 256, 128]
-        self.pool1_test = get_avgpool_callable(in_channels, self.kernel_size_test[0], return_quant_tensor=True)
-        self.pool2_test = get_avgpool_callable(in_channels, self.kernel_size_test[1], return_quant_tensor=True)
-        self.pool3_test = get_avgpool_callable(in_channels, self.kernel_size_test[2], return_quant_tensor=True)
-        self.pool4_test = get_avgpool_callable(in_channels, self.kernel_size_test[3], return_quant_tensor=True)
+        self.pool1_train = get_avgpool_callable(in_channels, self.kernel_size[0], return_quant_tensor=True)
+        self.pool2_train = get_avgpool_callable(in_channels, self.kernel_size[1], return_quant_tensor=True)
+        self.pool3_train = get_avgpool_callable(in_channels, self.kernel_size[2], return_quant_tensor=True)
+        self.pool4_train = get_avgpool_callable(in_channels, self.kernel_size[3], return_quant_tensor=True)
     
         self.concat = CustomQuantCat(bit_width=BIT_WIDTH, return_quant_tensor=True)
 
@@ -239,16 +230,10 @@ class PyramidPooling(nn.Module):
 
     def forward(self, x):
 
-        if self.training:
-            feat1 = self.upsample(self.conv1(self.pool1_train(x)), scale_factor=self.kernel_size_train[0])
-            feat2 = self.upsample(self.conv2(self.pool2_train(x)), scale_factor=self.kernel_size_train[1])
-            feat3 = self.upsample(self.conv3(self.pool3_train(x)), scale_factor=self.kernel_size_train[2])
-            feat4 = self.upsample(self.conv4(self.pool4_train(x)), scale_factor=self.kernel_size_train[3])
-        else:
-            feat1 = self.upsample(self.conv1(self.pool1_test(x)), scale_factor=self.kernel_size_test[0])
-            feat2 = self.upsample(self.conv2(self.pool2_test(x)), scale_factor=self.kernel_size_test[1])
-            feat3 = self.upsample(self.conv3(self.pool3_test(x)), scale_factor=self.kernel_size_test[2])
-            feat4 = self.upsample(self.conv4(self.pool4_test(x)), scale_factor=self.kernel_size_test[3])
+        feat1 = self.upsample(self.conv1(self.pool1_train(x)), scale_factor=self.kernel_size[0])
+        feat2 = self.upsample(self.conv2(self.pool2_train(x)), scale_factor=self.kernel_size[1])
+        feat3 = self.upsample(self.conv3(self.pool3_train(x)), scale_factor=self.kernel_size[2])
+        feat4 = self.upsample(self.conv4(self.pool4_train(x)), scale_factor=self.kernel_size[3])
 
         x = self.concat([x, feat1, feat2, feat3, feat4])
         x = self.out(x)

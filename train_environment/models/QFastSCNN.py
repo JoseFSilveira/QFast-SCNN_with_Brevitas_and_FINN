@@ -8,10 +8,10 @@ The following changes to make it compatible with quantization and translation to
 --> PyramidPooling F.interpolate bilinear with final tensor size as argument is replaced by another F.interpolate with nearest neighbor interpolation with pre-calculated scale factors.
 --> The adaptive average pooling layers are replaced by depthwise Conv layers ith kernel weights as 1/kernel_size, which is equivalent to average pooling, but allows for quantization and export to ONNX and FINN.
 --> torch.cat() was replaced by a modification of Brevitas qnn.QuantCat to allow for concatenation of QuantTensors, since the QuantTensor class does not have a cat() method anymore (Brevitas Bug).
---> A new concat operation was added and the original one modified.
-    -> The original model had a concatenation of tensors with depths [128, 32, 32, 32, 32] to form a new tensor with depth=256. Hardware concat layer requires tensors with equal shapes.
-    -> The new concat operation only concatenates the tensors with depth=32, resulting in a new tensor with depth=128.
-    -> Then the original concatenation only concatenates the tensor with depth 128 with the other one with depth 128, resulting in a new tensor with depth=256.
+--> The original concat operation was replaced by a two-stage cascade of concat operations to make the operation compatible for hardware implementation.
+    -> The original model had a concatenation of tensors with depths [128, 32, 32, 32, 32] to form a new tensor with depth=256, though Hardware concat layer requires tensors with equal shapes.
+    -> The first concat operation only concatenates the tensors with depth=32, resulting in a new tensor with depth=128.
+    -> The second concat operation concatenates the original 128-depth tensor with the previously generated 128-depth tensor, resulting in the final tensor with depth=256.
 --> Standard Add operations were replaced by Brevitas qnn.QuantEltwiseAdd to allow for addition of QuantTensors.
 --> The last upsampling layer is removed to avoid a large upsampling factor with 'nearest' mode, which can comprimise severly the accuracy of the model.
     -> obs: The last upsampling layer can be done in external post-processing step, with the output of the model being passed to a CPU or small GPU.

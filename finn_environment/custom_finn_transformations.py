@@ -250,3 +250,44 @@ class MakeConcatNHWC(Transformation):
                 break
 
         return (model, False)
+
+
+class RemoveUselessMultiThresholds(Transformation):
+    """
+    DO NOT USE: THIS TRANSFORMATION CANNOT BE DONE BECAUSE IT WILL BREAK THE MODEL. IT IS KEPT HERE FOR FUTURE REFERENCE.
+    When there is two (or more) MultiThreshold nodes in a row and the the first one consumer is exclusively the second one, the first MultiThreshold nodes is useless and can be removed.
+    This can reduce significantly the LUT usage in the final design, since MultiThreshold nodes are implemented with LUTs.
+    """
+
+    def apply(self, model):
+        nodes_to_remove = []
+        graph_modified = False
+
+        for node in model.graph.node:
+            if node.op_type == "MultiThreshold":
+
+                # Check if the producer is also a MultiThreshold node
+                producer = model.find_producer(node.input[0])
+                if producer is None or producer.op_type != "MultiThreshold":
+                    #warnings.warn(f"RemoveUselessMultiThresholds: Skipping node {node.name} because its producer is not a MultiThreshold node.")
+                    continue
+
+                # Check if the producer has one consumer
+                prod_consumers = model.find_consumers(producer.output[0])
+                if len(prod_consumers) > 1:
+                    warnings.warn(f"RemoveUselessMultiThresholds: Skipping node {node.name} because its producer has more than one consumer.")
+                    continue
+
+                ## If we reach this point, then proceed to remove the current MultiThreshold node and rewire the graph accordingly
+
+                # Rewires the input of the current node with the input of the repeated MultiThreshold (producer) node
+                node.input[0] = producer.input[0]
+                # Add the producer node to the list of nodes to remove
+                nodes_to_remove.append(producer)
+                # Set the graph_modified flag to True since we are modifying the graph
+                graph_modified = True
+
+        # Remove the useless MultiThreshold nodes from the graph
+        for node in nodes_to_remove:
+            model.graph.node.remove(node)
+        return model, graph_modified

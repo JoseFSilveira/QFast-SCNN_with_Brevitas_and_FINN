@@ -12,8 +12,8 @@
     "ram_style": "block"
   },
   "MVAU_rtl_0": {
-    "PE": 1,
-    "SIMD": 27,
+    "PE": 8,
+    "SIMD": 3,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
@@ -223,16 +223,10 @@
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "Thresholding_rtl_14": {
-    "PE": 1,
-    "runtime_writeable_weights": 0,
-    "depth_trigger_uram": 0,
-    "depth_trigger_bram": 0
-  },
   "AddStreams_hls_0": {
     "PE": 1
   },
-  "Thresholding_rtl_15": {
+  "Thresholding_rtl_14": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -249,13 +243,13 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_16": {
+  "Thresholding_rtl_15": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "Thresholding_rtl_17": {
+  "Thresholding_rtl_16": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -277,7 +271,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_18": {
+  "Thresholding_rtl_17": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -291,13 +285,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_19": {
-    "PE": 1,
-    "runtime_writeable_weights": 0,
-    "depth_trigger_uram": 0,
-    "depth_trigger_bram": 0
-  },
-  "Thresholding_rtl_20": {
+  "Thresholding_rtl_18": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -306,7 +294,7 @@
   "AddStreams_hls_1": {
     "PE": 1
   },
-  "Thresholding_rtl_21": {
+  "Thresholding_rtl_19": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -320,7 +308,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_22": {
+  "Thresholding_rtl_20": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -342,7 +330,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_23": {
+  "Thresholding_rtl_21": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -356,7 +344,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_24": {
+  "Thresholding_rtl_22": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -373,13 +361,13 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_25": {
+  "Thresholding_rtl_23": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "Thresholding_rtl_26": {
+  "Thresholding_rtl_24": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -401,7 +389,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_27": {
+  "Thresholding_rtl_25": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -415,13 +403,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_28": {
-    "PE": 1,
-    "runtime_writeable_weights": 0,
-    "depth_trigger_uram": 0,
-    "depth_trigger_bram": 0
-  },
-  "Thresholding_rtl_29": {
+  "Thresholding_rtl_26": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -430,7 +412,7 @@
   "AddStreams_hls_2": {
     "PE": 1
   },
-  "Thresholding_rtl_30": {
+  "Thresholding_rtl_27": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -447,13 +429,13 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_31": {
+  "Thresholding_rtl_28": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "Thresholding_rtl_32": {
+  "Thresholding_rtl_29": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -475,7 +457,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_33": {
+  "Thresholding_rtl_30": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -489,13 +471,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_34": {
-    "PE": 1,
-    "runtime_writeable_weights": 0,
-    "depth_trigger_uram": 0,
-    "depth_trigger_bram": 0
-  },
-  "Thresholding_rtl_35": {
+  "Thresholding_rtl_31": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -504,7 +480,7 @@
   "AddStreams_hls_3": {
     "PE": 1
   },
-  "Thresholding_rtl_36": {
+  "Thresholding_rtl_32": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -518,7 +494,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_37": {
+  "Thresholding_rtl_33": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -540,7 +516,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_38": {
+  "Thresholding_rtl_34": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -554,7 +530,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_39": {
+  "Thresholding_rtl_35": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -571,13 +547,13 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_40": {
+  "Thresholding_rtl_36": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "Thresholding_rtl_41": {
+  "Thresholding_rtl_37": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -599,7 +575,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_42": {
+  "Thresholding_rtl_38": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -613,13 +589,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_43": {
-    "PE": 1,
-    "runtime_writeable_weights": 0,
-    "depth_trigger_uram": 0,
-    "depth_trigger_bram": 0
-  },
-  "Thresholding_rtl_44": {
+  "Thresholding_rtl_39": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -628,7 +598,7 @@
   "AddStreams_hls_4": {
     "PE": 1
   },
-  "Thresholding_rtl_45": {
+  "Thresholding_rtl_40": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -645,13 +615,13 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_46": {
+  "Thresholding_rtl_41": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "Thresholding_rtl_47": {
+  "Thresholding_rtl_42": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -673,7 +643,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_48": {
+  "Thresholding_rtl_43": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -687,13 +657,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_49": {
-    "PE": 1,
-    "runtime_writeable_weights": 0,
-    "depth_trigger_uram": 0,
-    "depth_trigger_bram": 0
-  },
-  "Thresholding_rtl_50": {
+  "Thresholding_rtl_44": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -702,7 +666,7 @@
   "AddStreams_hls_5": {
     "PE": 1
   },
-  "Thresholding_rtl_51": {
+  "Thresholding_rtl_45": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -731,7 +695,7 @@
     "parallel_window": 0,
     "ram_style": "block"
   },
-  "Thresholding_rtl_52": {
+  "Thresholding_rtl_46": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -769,7 +733,31 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "MVAU_hls_0": {
+  "Thresholding_rtl_47": {
+    "PE": 1,
+    "runtime_writeable_weights": 0,
+    "depth_trigger_uram": 0,
+    "depth_trigger_bram": 0
+  },
+  "Thresholding_rtl_48": {
+    "PE": 1,
+    "runtime_writeable_weights": 0,
+    "depth_trigger_uram": 0,
+    "depth_trigger_bram": 0
+  },
+  "Thresholding_rtl_49": {
+    "PE": 1,
+    "runtime_writeable_weights": 0,
+    "depth_trigger_uram": 0,
+    "depth_trigger_bram": 0
+  },
+  "Thresholding_rtl_50": {
+    "PE": 1,
+    "runtime_writeable_weights": 0,
+    "depth_trigger_uram": 0,
+    "depth_trigger_bram": 0
+  },
+  "MVAU_rtl_22": {
     "PE": 1,
     "SIMD": 1,
     "ram_style": "block",
@@ -777,7 +765,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "MVAU_hls_1": {
+  "MVAU_rtl_23": {
     "PE": 1,
     "SIMD": 1,
     "ram_style": "block",
@@ -785,7 +773,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "MVAU_hls_2": {
+  "MVAU_rtl_24": {
     "PE": 1,
     "SIMD": 1,
     "ram_style": "block",
@@ -793,13 +781,25 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "MVAU_hls_3": {
+  "MVAU_rtl_25": {
     "PE": 1,
     "SIMD": 1,
     "ram_style": "block",
     "resType": "auto",
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
+  },
+  "Thresholding_rtl_51": {
+    "PE": 1,
+    "runtime_writeable_weights": 0,
+    "depth_trigger_uram": 0,
+    "depth_trigger_bram": 0
+  },
+  "Thresholding_rtl_52": {
+    "PE": 1,
+    "runtime_writeable_weights": 0,
+    "depth_trigger_uram": 0,
+    "depth_trigger_bram": 0
   },
   "Thresholding_rtl_53": {
     "PE": 1,
@@ -849,13 +849,7 @@
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "Thresholding_rtl_61": {
-    "PE": 1,
-    "runtime_writeable_weights": 0,
-    "depth_trigger_uram": 0,
-    "depth_trigger_bram": 0
-  },
-  "MVAU_rtl_22": {
+  "MVAU_rtl_26": {
     "PE": 1,
     "SIMD": 4,
     "ram_style": "block",
@@ -863,7 +857,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_62": {
+  "Thresholding_rtl_61": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -885,13 +879,13 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_63": {
+  "Thresholding_rtl_62": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "MVAU_rtl_23": {
+  "MVAU_rtl_27": {
     "PE": 4,
     "SIMD": 8,
     "ram_style": "block",
@@ -899,7 +893,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_64": {
+  "Thresholding_rtl_63": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -908,13 +902,7 @@
   "AddStreams_hls_6": {
     "PE": 1
   },
-  "Thresholding_rtl_65": {
-    "PE": 1,
-    "runtime_writeable_weights": 0,
-    "depth_trigger_uram": 0,
-    "depth_trigger_bram": 0
-  },
-  "Thresholding_rtl_66": {
+  "Thresholding_rtl_64": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -936,13 +924,13 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_67": {
+  "Thresholding_rtl_65": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "MVAU_rtl_24": {
+  "MVAU_rtl_28": {
     "PE": 4,
     "SIMD": 8,
     "ram_style": "block",
@@ -950,7 +938,7 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_68": {
+  "Thresholding_rtl_66": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
@@ -972,13 +960,13 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_69": {
+  "Thresholding_rtl_67": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "MVAU_rtl_25": {
+  "MVAU_rtl_29": {
     "PE": 4,
     "SIMD": 8,
     "ram_style": "block",
@@ -986,13 +974,13 @@
     "mem_mode": "internal_decoupled",
     "runtime_writeable_weights": 0
   },
-  "Thresholding_rtl_70": {
+  "Thresholding_rtl_68": {
     "PE": 1,
     "runtime_writeable_weights": 0,
     "depth_trigger_uram": 0,
     "depth_trigger_bram": 0
   },
-  "MVAU_rtl_26": {
+  "MVAU_rtl_30": {
     "PE": 1,
     "SIMD": 1,
     "ram_style": "block",

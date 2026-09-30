@@ -28,34 +28,51 @@ from brevitas.inject.enum import *
 from config import BIT_WIDTH, IM_SIZE
 
 
-def get_avgpool_callable(channels: int, kernel_size: tuple[int, int] | int, return_quant_tensor=False) -> nn.Module:
+class AvgPoolFINNFriendly(nn.Module):
     """
-    Returns a callable that performs a depthwise convolution with kernel weights as 1/kernel_size, which is equivalent to average pooling, but allows for quantization and export to ONNX and FINN.
-    This is used to replace the adaptive average pooling layers in the original model.
+    A replacement for the adaptive average pooling layers in the original model, which is compatible with quantization and export to ONNX and FINN.
+    This is done by using a depthwise convolution with kernel weights as 1/kernel_size, which is equivalent to average pooling, but allows for quantization and export to ONNX and FINN.
     """
-    # Define the kernel area for the average pooling operation
-    if type(kernel_size) == int:
-        kernel_area = kernel_size * kernel_size
-    else:
-        kernel_area = kernel_size[0] * kernel_size[1]
 
-    # Create the depthwise convolution layer with frozen weights of 1/kernel_area, which is equivalent to average pooling
-    pool = qnn.QuantConv2d(in_channels=channels,
-                           out_channels=channels,
-                           kernel_size=kernel_size,
-                           stride=kernel_size,
-                           groups=channels,
-                           bias=False,
-                           bit_width=BIT_WIDTH,
-                           weight_quant=Int8WeightPerTensorFloat,
-                           return_quant_tensor=return_quant_tensor)
+    def __init__(self, channels: int, kernel_size: tuple[int, int] | int, return_quant_tensor=False):
+        super().__init__()
+        self.return_quant_tensor = return_quant_tensor
+        # Create the depthwise convolution layer with frozen weights of 1, which results in a depthwise sum of pixels in the kernel area.
+        self.pool = qnn.QuantConv2d(in_channels=channels,
+                                out_channels=channels,
+                                kernel_size=kernel_size,
+                                stride=kernel_size,
+                                groups=channels,
+                                bias=False,
+                                bit_width=BIT_WIDTH,
+                                weight_quant=Int8WeightPerTensorFloat,
+                                return_quant_tensor=False)
+        # Freeze the weights of the depthwise convolution layer to 1
+        for param in self.pool.parameters():
+            param.requires_grad = False
+        nn.init.constant_(self.pool.weight.data, 1.0)
+        self.pool.weight.data = self.pool.weight.data.to(torch.float32) # make sure the weights are in float32, since something was promoting the weights to double precision, which is not supported by FINN.
 
-    # Frese the weights of the depthwise convolution layer to 1/kernel_area, which is equivalent to average pooling
-    for param in pool.parameters():
-        param.requires_grad = False
-    nn.init.constant_(pool.weight.data, 1.0/kernel_area)
+        # Define the kernel area for the average pooling operation
+        if type(kernel_size) == int:
+            kernel_area = kernel_size * kernel_size
+        else:
+            kernel_area = kernel_size[0] * kernel_size[1]
+        avgpool_scale_factor = 1.0 / kernel_area # Defining a scale factor to assert a multiplication the forward method, since FINN does not support division operations.
 
-    return pool
+        # The output of the depthwise convolution layer is divided by the kernel area to get the average pooling result.
+        self.div = lambda x: x * avgpool_scale_factor
+
+        # Quantize the output of the average pooling operation using per-tensor quantization with a floating-point scale.
+        self.act_quant = qnn.QuantIdentity(act_quant=Int8ActPerTensorFloat, bit_width=BIT_WIDTH, return_quant_tensor=True)
+
+    def forward(self, x):
+        x = self.pool(x)
+        x = self.div(x)
+        if self.return_quant_tensor:
+            x = self.act_quant(x)
+        return x
+
 
 class CustomQuantCat(qnn.QuantCat):
     '''
@@ -181,18 +198,22 @@ class LinearBottleneck(nn.Module):
             # pw-linear
             qnn.QuantConv2d(in_channels * t, out_channels, 1, bias=False, weight_bit_width=BIT_WIDTH, weight_quant=Int8WeightPerTensorFloat, return_quant_tensor=True),
             nn.BatchNorm2d(out_channels),
-            # quantize the output so it can be used in the skip connection addition
-            qnn.QuantIdentity(act_quant=Int8ActPerTensorFloat, bit_width=BIT_WIDTH, return_quant_tensor=True)
         )
+
+        # quantize the output so it can be used in the skip connection addition
+        self.act_quant = qnn.QuantIdentity(act_quant=Int8ActPerTensorFloat, bit_width=BIT_WIDTH, return_quant_tensor=True)
         
         # Added quantization for the skip connection
         if self.use_shortcut:
-            self.add = qnn.QuantEltwiseAdd(bit_width=BIT_WIDTH, return_quant_tensor=True)
+            self.add = qnn.QuantEltwiseAdd(bit_width=BIT_WIDTH, return_quant_tensor=True,
+                                           input_quant=Int8ActPerTensorFloat, output_quant=Int8ActPerTensorFloat)
         
     def forward(self, x):
         out = self.block(x)
         if self.use_shortcut:
-            out = self.add(x, out)
+            out = self.add(x, out) # QuantEltwiseAdd already quantizes the output, so no need to quantize it again.
+        else:
+            out = self.act_quant(out) # If there is no skip connection, we need to quantize the output before returning it.
         return out
 
 class PyramidPooling(nn.Module):
@@ -222,12 +243,17 @@ class PyramidPooling(nn.Module):
         # The original model uses adaptive average pooling, which can be replaced by a standard Average Pooling with pre-defined kernel sizes.
         # Necessary to create new instance for each pool size since the output size is a parameter in the quantized version.
 
-        self.pool1_train = get_avgpool_callable(in_channels, self.kernel_size[0], return_quant_tensor=True)
-        self.pool2_train = get_avgpool_callable(in_channels, self.kernel_size[1], return_quant_tensor=True)
-        self.pool3_train = get_avgpool_callable(in_channels, self.kernel_size[2], return_quant_tensor=True)
-        self.pool4_train = get_avgpool_callable(in_channels, self.kernel_size[3], return_quant_tensor=True)
-    
-        self.concat = CustomQuantCat(bit_width=BIT_WIDTH, return_quant_tensor=True)
+        self.pool1_train = AvgPoolFINNFriendly(in_channels, self.kernel_size[0], return_quant_tensor=True)
+        self.pool2_train = AvgPoolFINNFriendly(in_channels, self.kernel_size[1], return_quant_tensor=True)
+        self.pool3_train = AvgPoolFINNFriendly(in_channels, self.kernel_size[2], return_quant_tensor=True)
+        self.pool4_train = AvgPoolFINNFriendly(in_channels, self.kernel_size[3], return_quant_tensor=True)
+
+        # First Concat operation to concatenate the features with depth=32, resulting in a new tensor with depth=128; return_quant_tensor=False and output_quant=None since the next concat operation will quantize the output again.
+        self.concat1 = CustomQuantCat(bit_width=BIT_WIDTH, return_quant_tensor=False,
+                                      input_quant=Int8ActPerTensorFloat, output_quant=None)
+        # Second Concat operation to concatenate the original tensor with depth=128 with the previously generated tensor with depth=128, resulting in the final tensor with depth=256.
+        self.concat2 = CustomQuantCat(bit_width=BIT_WIDTH, return_quant_tensor=True,
+                                      input_quant=Int8ActPerTensorFloat, output_quant=Int8ActPerTensorFloat)
 
     def upsample(self, x, scale_factor):
             return F.interpolate(x, scale_factor=scale_factor, mode='nearest', recompute_scale_factor=False)
@@ -239,10 +265,9 @@ class PyramidPooling(nn.Module):
         feat3 = self.upsample(self.conv3(self.pool3_train(x)), scale_factor=self.kernel_size[2])
         feat4 = self.upsample(self.conv4(self.pool4_train(x)), scale_factor=self.kernel_size[3])
 
-        feat_concats = self.concat([feat1, feat2, feat3, feat4])
-        x = self.concat([x, feat_concats])
-        x = self.out(x)
-        return x
+        feat_concat = self.concat1([feat1, feat2, feat3, feat4])
+        x = self.concat2([x, feat_concat])
+        return self.out(x)
 
 
 class LearningToDownsample(nn.Module):
@@ -310,8 +335,9 @@ class FeatureFusionModule(nn.Module):
         )
         self.relu = qnn.QuantReLU(inplace=True, bit_width=BIT_WIDTH, act_quant=Uint8ActPerTensorFloat, return_quant_tensor=True)
 
-        # Added quantization for the skip connection
-        self.add = qnn.QuantEltwiseAdd(bit_width=BIT_WIDTH, return_quant_tensor=True)
+        # Added quantization for the skip connection; return_quant_tensor=False and output_quant=None since QuantEltwiseAdd will quantize the output again.
+        self.add = qnn.QuantEltwiseAdd(bit_width=BIT_WIDTH, return_quant_tensor=False,
+                                       input_quant=Int8ActPerTensorFloat, output_quant=None)
 
     def upsample(self, x, scale_factor):
                 return F.interpolate(x, scale_factor=scale_factor, mode='nearest')                                           

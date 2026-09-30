@@ -42,7 +42,7 @@
       "LUT": 0,
       "URAM": 0,
       "URAM_efficiency": 1,
-      "DSP": 27
+      "DSP": 6
     },
     {
       "BRAM_18K": 6,
@@ -50,7 +50,7 @@
       "LUT": 0,
       "URAM": 0,
       "URAM_efficiency": 1,
-      "DSP": 27
+      "DSP": 6
     }
   ],
   "Thresholding_rtl_1": [
@@ -545,16 +545,6 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_14": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
-      "LUT": 279.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
   "AddStreams_hls_0": [
     {
       "BRAM_18K": 0,
@@ -565,7 +555,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_15": [
+  "Thresholding_rtl_14": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -603,7 +593,7 @@
       "DSP": 2
     }
   ],
-  "Thresholding_rtl_16": [
+  "Thresholding_rtl_15": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -613,7 +603,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_17": [
+  "Thresholding_rtl_16": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -677,7 +667,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_18": [
+  "Thresholding_rtl_17": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -705,21 +695,11 @@
       "DSP": 2
     }
   ],
-  "Thresholding_rtl_19": [
+  "Thresholding_rtl_18": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 5610.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
-  "Thresholding_rtl_20": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
-      "LUT": 279.0,
+      "LUT": 5865.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -735,7 +715,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_21": [
+  "Thresholding_rtl_19": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -763,7 +743,7 @@
       "DSP": 2
     }
   ],
-  "Thresholding_rtl_22": [
+  "Thresholding_rtl_20": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -827,7 +807,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_23": [
+  "Thresholding_rtl_21": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -855,7 +835,7 @@
       "DSP": 1
     }
   ],
-  "Thresholding_rtl_24": [
+  "Thresholding_rtl_22": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -893,7 +873,7 @@
       "DSP": 1
     }
   ],
-  "Thresholding_rtl_25": [
+  "Thresholding_rtl_23": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -903,7 +883,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_26": [
+  "Thresholding_rtl_24": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -967,7 +947,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_27": [
+  "Thresholding_rtl_25": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -995,21 +975,11 @@
       "DSP": 1
     }
   ],
-  "Thresholding_rtl_28": [
+  "Thresholding_rtl_26": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
       "LUT": 8426.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
-  "Thresholding_rtl_29": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
-      "LUT": 855.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -1025,7 +995,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_30": [
+  "Thresholding_rtl_27": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1063,7 +1033,7 @@
       "DSP": 1
     }
   ],
-  "Thresholding_rtl_31": [
+  "Thresholding_rtl_28": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1073,7 +1043,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_32": [
+  "Thresholding_rtl_29": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1137,7 +1107,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_33": [
+  "Thresholding_rtl_30": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1165,21 +1135,11 @@
       "DSP": 1
     }
   ],
-  "Thresholding_rtl_34": [
+  "Thresholding_rtl_31": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 8809.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
-  "Thresholding_rtl_35": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
-      "LUT": 855.0,
+      "LUT": 9192.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -1195,7 +1155,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_36": [
+  "Thresholding_rtl_32": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1223,7 +1183,7 @@
       "DSP": 1
     }
   ],
-  "Thresholding_rtl_37": [
+  "Thresholding_rtl_33": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1287,7 +1247,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_38": [
+  "Thresholding_rtl_34": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1315,7 +1275,7 @@
       "DSP": 1
     }
   ],
-  "Thresholding_rtl_39": [
+  "Thresholding_rtl_35": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1353,17 +1313,17 @@
       "DSP": 2
     }
   ],
-  "Thresholding_rtl_40": [
+  "Thresholding_rtl_36": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 270.0,
+      "LUT": 4080.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_41": [
+  "Thresholding_rtl_37": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1427,7 +1387,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_42": [
+  "Thresholding_rtl_38": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1455,21 +1415,11 @@
       "DSP": 2
     }
   ],
-  "Thresholding_rtl_43": [
+  "Thresholding_rtl_39": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 12750.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
-  "Thresholding_rtl_44": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
-      "LUT": 270.0,
+      "LUT": 13260.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -1485,7 +1435,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_45": [
+  "Thresholding_rtl_40": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1523,7 +1473,7 @@
       "DSP": 2
     }
   ],
-  "Thresholding_rtl_46": [
+  "Thresholding_rtl_41": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1533,7 +1483,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_47": [
+  "Thresholding_rtl_42": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1597,7 +1547,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_48": [
+  "Thresholding_rtl_43": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1625,21 +1575,11 @@
       "DSP": 2
     }
   ],
-  "Thresholding_rtl_49": [
+  "Thresholding_rtl_44": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
       "LUT": 11730.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
-  "Thresholding_rtl_50": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
-      "LUT": 270.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -1655,7 +1595,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_51": [
+  "Thresholding_rtl_45": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1677,7 +1617,7 @@
   ],
   "ConvolutionInputGenerator_rtl_12": [
     {
-      "BRAM_18K": 2,
+      "BRAM_18K": 8,
       "BRAM_efficiency": 1,
       "LUT": 300,
       "URAM": 0,
@@ -1687,7 +1627,7 @@
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 1116,
+      "LUT": 2564,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -1696,7 +1636,7 @@
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
       "LUT": 300,
-      "URAM": 1,
+      "URAM": 3,
       "URAM_efficiency": 1,
       "DSP": 0
     }
@@ -1755,7 +1695,7 @@
   ],
   "ConvolutionInputGenerator_rtl_15": [
     {
-      "BRAM_18K": 8,
+      "BRAM_18K": 2,
       "BRAM_efficiency": 1,
       "LUT": 300,
       "URAM": 0,
@@ -1765,7 +1705,7 @@
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 2564,
+      "LUT": 1116,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -1774,12 +1714,12 @@
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
       "LUT": 300,
-      "URAM": 3,
+      "URAM": 1,
       "URAM_efficiency": 1,
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_52": [
+  "Thresholding_rtl_46": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -1792,16 +1732,16 @@
   "VVAU_hls_11": [
     {
       "BRAM_18K": 1,
-      "BRAM_efficiency": 0.19444444444444445,
-      "LUT": 335,
+      "BRAM_efficiency": 0.7777777777777778,
+      "LUT": 337,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 1
     },
     {
       "BRAM_18K": 1,
-      "BRAM_efficiency": 0.19444444444444445,
-      "LUT": 417,
+      "BRAM_efficiency": 0.7777777777777778,
+      "LUT": 419,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -1846,26 +1786,66 @@
   "VVAU_hls_14": [
     {
       "BRAM_18K": 1,
-      "BRAM_efficiency": 0.7777777777777778,
-      "LUT": 337,
+      "BRAM_efficiency": 0.19444444444444445,
+      "LUT": 335,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 1
     },
     {
       "BRAM_18K": 1,
-      "BRAM_efficiency": 0.7777777777777778,
-      "LUT": 419,
+      "BRAM_efficiency": 0.19444444444444445,
+      "LUT": 417,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
     }
   ],
-  "MVAU_hls_0": [
+  "Thresholding_rtl_47": [
+    {
+      "BRAM_18K": 0,
+      "BRAM_efficiency": 1,
+      "LUT": 9690.0,
+      "URAM": 0,
+      "URAM_efficiency": 1,
+      "DSP": 0
+    }
+  ],
+  "Thresholding_rtl_48": [
+    {
+      "BRAM_18K": 0,
+      "BRAM_efficiency": 1,
+      "LUT": 11730.0,
+      "URAM": 0,
+      "URAM_efficiency": 1,
+      "DSP": 0
+    }
+  ],
+  "Thresholding_rtl_49": [
+    {
+      "BRAM_18K": 0,
+      "BRAM_efficiency": 1,
+      "LUT": 8670.0,
+      "URAM": 0,
+      "URAM_efficiency": 1,
+      "DSP": 0
+    }
+  ],
+  "Thresholding_rtl_50": [
+    {
+      "BRAM_18K": 0,
+      "BRAM_efficiency": 1,
+      "LUT": 10710.0,
+      "URAM": 0,
+      "URAM_efficiency": 1,
+      "DSP": 0
+    }
+  ],
+  "MVAU_rtl_22": [
     {
       "BRAM_18K": 2,
       "BRAM_efficiency": 0.8888888888888888,
-      "LUT": 360,
+      "LUT": 0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 1
@@ -1873,17 +1853,17 @@
     {
       "BRAM_18K": 2,
       "BRAM_efficiency": 0.8888888888888888,
-      "LUT": 608,
+      "LUT": 0,
       "URAM": 0,
       "URAM_efficiency": 1,
-      "DSP": 0
+      "DSP": 1
     }
   ],
-  "MVAU_hls_1": [
+  "MVAU_rtl_23": [
     {
       "BRAM_18K": 2,
       "BRAM_efficiency": 0.8888888888888888,
-      "LUT": 369,
+      "LUT": 0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 1
@@ -1891,17 +1871,17 @@
     {
       "BRAM_18K": 2,
       "BRAM_efficiency": 0.8888888888888888,
-      "LUT": 656,
+      "LUT": 0,
       "URAM": 0,
       "URAM_efficiency": 1,
-      "DSP": 0
+      "DSP": 1
     }
   ],
-  "MVAU_hls_2": [
+  "MVAU_rtl_24": [
     {
       "BRAM_18K": 2,
       "BRAM_efficiency": 0.8888888888888888,
-      "LUT": 373,
+      "LUT": 0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 1
@@ -1909,17 +1889,17 @@
     {
       "BRAM_18K": 2,
       "BRAM_efficiency": 0.8888888888888888,
-      "LUT": 748,
+      "LUT": 0,
       "URAM": 0,
       "URAM_efficiency": 1,
-      "DSP": 0
+      "DSP": 1
     }
   ],
-  "MVAU_hls_3": [
+  "MVAU_rtl_25": [
     {
       "BRAM_18K": 2,
       "BRAM_efficiency": 0.8888888888888888,
-      "LUT": 363,
+      "LUT": 0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 1
@@ -1927,7 +1907,27 @@
     {
       "BRAM_18K": 2,
       "BRAM_efficiency": 0.8888888888888888,
-      "LUT": 631,
+      "LUT": 0,
+      "URAM": 0,
+      "URAM_efficiency": 1,
+      "DSP": 1
+    }
+  ],
+  "Thresholding_rtl_51": [
+    {
+      "BRAM_18K": 0,
+      "BRAM_efficiency": 1,
+      "LUT": 2560.0,
+      "URAM": 0,
+      "URAM_efficiency": 1,
+      "DSP": 0
+    }
+  ],
+  "Thresholding_rtl_52": [
+    {
+      "BRAM_18K": 0,
+      "BRAM_efficiency": 1,
+      "LUT": 3072.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -1937,7 +1937,7 @@
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 4224.0,
+      "LUT": 2688.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -1947,27 +1947,7 @@
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 4352.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
-  "Thresholding_rtl_55": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
-      "LUT": 288.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
-  "Thresholding_rtl_56": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
-      "LUT": 3968.0,
+      "LUT": 3840.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -2013,6 +1993,26 @@
       "DSP": 0
     }
   ],
+  "Thresholding_rtl_55": [
+    {
+      "BRAM_18K": 0,
+      "BRAM_efficiency": 1,
+      "LUT": 1024.0,
+      "URAM": 0,
+      "URAM_efficiency": 1,
+      "DSP": 0
+    }
+  ],
+  "Thresholding_rtl_56": [
+    {
+      "BRAM_18K": 0,
+      "BRAM_efficiency": 1,
+      "LUT": 288.0,
+      "URAM": 0,
+      "URAM_efficiency": 1,
+      "DSP": 0
+    }
+  ],
   "Thresholding_rtl_57": [
     {
       "BRAM_18K": 0,
@@ -2027,27 +2027,7 @@
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 288.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
-  "Thresholding_rtl_59": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
       "LUT": 1024.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
-  "Thresholding_rtl_60": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
-      "LUT": 288.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -2063,17 +2043,37 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_61": [
+  "Thresholding_rtl_59": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 8160.0,
+      "LUT": 270.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
     }
   ],
-  "MVAU_rtl_22": [
+  "StreamingConcat_hls_1": [
+    {
+      "BRAM_18K": 0,
+      "BRAM_efficiency": 1,
+      "LUT": 0,
+      "URAM": 0,
+      "URAM_efficiency": 1,
+      "DSP": 0
+    }
+  ],
+  "Thresholding_rtl_60": [
+    {
+      "BRAM_18K": 0,
+      "BRAM_efficiency": 1,
+      "LUT": 252.0,
+      "URAM": 1.0,
+      "URAM_efficiency": 1,
+      "DSP": 0
+    }
+  ],
+  "MVAU_rtl_26": [
     {
       "BRAM_18K": 16,
       "BRAM_efficiency": 0.8888888888888888,
@@ -2091,11 +2091,11 @@
       "DSP": 4
     }
   ],
-  "Thresholding_rtl_62": [
+  "Thresholding_rtl_61": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 13260.0,
+      "LUT": 12750.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -2165,17 +2165,17 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_63": [
+  "Thresholding_rtl_62": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
-      "LUT": 11220.0,
+      "LUT": 10710.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
     }
   ],
-  "MVAU_rtl_23": [
+  "MVAU_rtl_27": [
     {
       "BRAM_18K": 8,
       "BRAM_efficiency": 0.8888888888888888,
@@ -2193,7 +2193,7 @@
       "DSP": 8
     }
   ],
-  "Thresholding_rtl_64": [
+  "Thresholding_rtl_63": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -2213,21 +2213,11 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_65": [
+  "Thresholding_rtl_64": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
       "LUT": 270.0,
-      "URAM": 0,
-      "URAM_efficiency": 1,
-      "DSP": 0
-    }
-  ],
-  "Thresholding_rtl_66": [
-    {
-      "BRAM_18K": 0,
-      "BRAM_efficiency": 1,
-      "LUT": 4080.0,
       "URAM": 0,
       "URAM_efficiency": 1,
       "DSP": 0
@@ -2287,7 +2277,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_67": [
+  "Thresholding_rtl_65": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -2297,7 +2287,7 @@
       "DSP": 0
     }
   ],
-  "MVAU_rtl_24": [
+  "MVAU_rtl_28": [
     {
       "BRAM_18K": 8,
       "BRAM_efficiency": 0.8888888888888888,
@@ -2315,7 +2305,7 @@
       "DSP": 8
     }
   ],
-  "Thresholding_rtl_68": [
+  "Thresholding_rtl_66": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -2379,7 +2369,7 @@
       "DSP": 0
     }
   ],
-  "Thresholding_rtl_69": [
+  "Thresholding_rtl_67": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -2389,7 +2379,7 @@
       "DSP": 0
     }
   ],
-  "MVAU_rtl_25": [
+  "MVAU_rtl_29": [
     {
       "BRAM_18K": 8,
       "BRAM_efficiency": 0.8888888888888888,
@@ -2407,7 +2397,7 @@
       "DSP": 8
     }
   ],
-  "Thresholding_rtl_70": [
+  "Thresholding_rtl_68": [
     {
       "BRAM_18K": 0,
       "BRAM_efficiency": 1,
@@ -2417,7 +2407,7 @@
       "DSP": 0
     }
   ],
-  "MVAU_rtl_26": [
+  "MVAU_rtl_30": [
     {
       "BRAM_18K": 1,
       "BRAM_efficiency": 0.2222222222222222,
